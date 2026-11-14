@@ -1,182 +1,298 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Clash of Champions — Informatika Kelas 9</title>
-<style>
-:root{--bg:#080d1b;--panel:#111a31;--panel2:#182544;--gold:#ffd166;--cyan:#55d6ff;--pink:#ff5f8f;--green:#55e6a5;--muted:#a9b7d3;--white:#f7f9ff}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 0%,#1b3260 0,#080d1b 52%);color:var(--white);font-family:Inter,Segoe UI,Arial,sans-serif;min-height:100vh}
-button,input{font:inherit}button{cursor:pointer;border:0;border-radius:12px;padding:12px 18px;font-weight:800;color:#08101f;background:var(--gold);transition:.18s}button:hover{transform:translateY(-2px);filter:brightness(1.08)}button:disabled{opacity:.4;cursor:not-allowed;transform:none}
-.secondary{background:#273654;color:var(--white);border:1px solid #435577}.cyan{background:var(--cyan)}.pink{background:var(--pink)}.green{background:var(--green)}
-header{display:flex;justify-content:space-between;align-items:center;padding:16px 5%;border-bottom:1px solid #ffffff18;gap:12px;flex-wrap:wrap}
-.brand{font-weight:1000;letter-spacing:2px;color:var(--gold)}.top-actions{display:flex;gap:8px;flex-wrap:wrap}
-main{max-width:1100px;margin:auto;padding:28px 20px 60px}.screen{display:none;animation:fade .35s ease}.screen.active{display:block}@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.hero{text-align:center;padding:55px 20px 35px}.eyebrow{color:var(--cyan);font-weight:900;letter-spacing:4px;text-transform:uppercase}.hero h1{font-size:clamp(2.5rem,8vw,5.6rem);line-height:.95;margin:15px 0;color:var(--gold);text-shadow:0 5px 0 #9b5a00,0 0 35px #ffc85755}.hero h2{font-size:clamp(1.1rem,3vw,1.8rem);margin:15px 0}.hero p{color:var(--muted);line-height:1.7}
-.panel{background:linear-gradient(145deg,#172443,#0e172c);border:1px solid #ffffff20;border-radius:20px;padding:22px;box-shadow:0 15px 45px #0005;margin:16px 0}
-.meta{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:22px 0}.pill{padding:8px 13px;border-radius:999px;background:#ffffff12;border:1px solid #ffffff20;color:#dce8ff;font-size:.9rem}
-.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px}.scoreboard{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0}.team{padding:18px;border-radius:16px;background:#15213b;border:1px solid #ffffff25}.team.alpha{border-color:var(--cyan)}.team.beta{border-color:var(--pink)}.team h3{margin:0 0 8px}.score{font-size:2rem;font-weight:1000}.alpha .score{color:var(--cyan)}.beta .score{color:var(--pink)}
-h2.section-title{font-size:clamp(1.6rem,4vw,2.4rem);color:var(--gold)}.sub{color:var(--muted);line-height:1.6}
-.board{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.board-head{font-weight:900;text-align:center;padding:12px 4px;border-radius:10px;background:#263858}.tile{min-height:78px;background:#172744;border:1px solid #496080;color:white;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}.tile strong{font-size:1.2rem;color:var(--gold)}.tile small{color:var(--muted)}.tile.done{background:#0d392f;border-color:#347f66;color:#8af0c4}.tile.done strong{color:#8af0c4}
-.question-card{max-width:850px;margin:20px auto}.q-top{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;color:var(--muted)}.question{font-size:clamp(1.25rem,3vw,1.8rem);line-height:1.45;margin:24px 0}.options{display:grid;gap:10px}.option{background:#1b2b4a;color:white;text-align:left;border:1px solid #405477;padding:15px;border-radius:12px}.option.correct{background:#10513b;border-color:var(--green)}.option.wrong{background:#5b2036;border-color:var(--pink)}.feedback{padding:15px;border-radius:12px;background:#ffffff10;margin:16px 0;line-height:1.6}.timer{font-weight:900;color:var(--gold)}.field{display:flex;gap:8px;flex-wrap:wrap}.field input{flex:1;min-width:180px;background:#081326;color:white;border:1px solid #526583;padding:13px;border-radius:10px}
-.hidden{display:none!important}.rule-list{line-height:1.8;color:#dce6fa}.rule-list li{margin:6px 0}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px}.mini-title{color:var(--cyan);font-weight:900}.outline-list{line-height:1.8}.win{text-align:center;padding:45px 15px}.trophy{font-size:5rem}.winner{font-size:clamp(2rem,7vw,4rem);color:var(--gold);font-weight:1000}
-footer{text-align:center;padding:22px;color:#8090ad;font-size:.85rem;border-top:1px solid #ffffff15}
-@media(max-width:650px){.board{grid-template-columns:repeat(3,minmax(0,1fr))}.board-head{display:none}.two-col{grid-template-columns:1fr}.scoreboard{grid-template-columns:1fr}.hero{padding-top:35px}}
-@media print{header,.top-actions,button{display:none!important}body{background:white;color:#111}.panel{box-shadow:none;background:white;color:#111;border:1px solid #aaa}.screen{display:block!important;page-break-after:always}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Kilat Interaktif</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .quiz-container {
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        .timer-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #eee;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .timer-fill {
+            height: 100%;
+            background-color: #ff4757;
+            width: 100%;
+            transition: width 1s linear;
+        }
+        .question {
+            font-size: 18px;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 20px;
+            min-height: 60px;
+        }
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .option-btn {
+            background-color: #f1f2f6;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+        .option-btn:hover:not(:disabled) {
+            background-color: #dfe4ea;
+            border-color: #a4b0be;
+        }
+        .option-btn.correct {
+            background-color: #2ed573 !important;
+            color: white;
+            border-color: #26af5f;
+        }
+        .option-btn.wrong {
+            background-color: #ff4757 !important;
+            color: white;
+            border-color: #ff6b81;
+        }
+        .score-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            font-weight: bold;
+            color: #666;
+            font-size: 14px;
+        }
+        .hidden {
+            display: none;
+        }
+        .restart-btn {
+            background-color: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 25px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .restart-btn:hover {
+            background-color: #5a6fe8;
+        }
+    </style>
 </head>
 <body>
-<header>
-  <div class="brand">⚡ CLASH OF CHAMPIONS</div>
-  <div class="top-actions">
-    <button class="secondary" id="soundToggle" onclick="toggleSound()">🔊 Suara: Aktif</button>
-    <button class="secondary" onclick="showScreen('guide')">Panduan Canva</button>
-    <button class="secondary" onclick="showScreen('home')">Beranda</button>
-  </div>
-</header>
-<main>
-<section id="home" class="screen active">
- <div class="hero">
-  <div class="eyebrow">Informatika • Kelas 9 / Fase D</div>
-  <h1>CLASH OF<br>CHAMPIONS</h1>
-  <h2>DATA SECURITY & PRIVACY BATTLE</h2>
-  <p>Siapkan strategi, asah logika, dan buktikan tim mana yang paling tangguh<br>dalam menjaga keamanan data serta melindungi privasi digital!</p>
-  <div class="meta"><span class="pill">Guru: Herianto Simorangkir, S. Kom</span><span class="pill">Rombel: 9</span><span class="pill">30 Pilihan Ganda + 10 Isian</span></div>
-  <div class="actions"><button onclick="startGame()">MASUK ARENA ⚔</button><button class="secondary" onclick="showScreen('guide')">Lihat Aturan Main</button></div>
- </div>
- <div class="panel"><h2 class="section-title">Misi Pembelajaran</h2><p class="sub">Mengenali ancaman digital, menerapkan kata sandi yang kuat, memahami autentikasi, phishing, pencadangan, enkripsi, jejak digital, serta hak dan tanggung jawab dalam melindungi data pribadi.</p></div>
-</section>
 
-<section id="guide" class="screen">
- <h2 class="section-title">📜 Aturan Pertandingan</h2>
- <div class="panel">
-  <ol class="rule-list">
-   <li><b>Dua tim bertanding:</b> Tim Alpha dan Tim Beta. Pilih tim yang sedang mendapat giliran sebelum membuka soal.</li>
-   <li><b>Papan soal:</b> pilih kotak Easy (100 poin), Medium (200 poin), atau Hard (300 poin). Setiap kotak hanya dapat dimainkan satu kali.</li>
-   <li><b>Batas waktu:</b> 30 detik untuk Easy, 45 detik untuk Medium, dan 60 detik untuk Hard. Untuk soal isian, 60 detik.</li>
-   <li><b>Skor:</b> jawaban benar mendapat poin sesuai level. Jawaban salah tidak mendapat poin (tanpa penalti). Guru dapat mengaktifkan penalti opsional secara lisan.</li>
-   <li><b>Pembahasan:</b> setelah jawaban diperiksa, baca konsep kunci sebelum kembali ke papan.</li>
-   <li><b>Giliran:</b> setelah satu soal selesai, giliran berpindah ke tim berikutnya. Guru dapat mengatur tim yang menjawab.</li>
-   <li><b>Champion:</b> tim dengan skor tertinggi setelah semua soal selesai menjadi juara. Jika seri, guru dapat memberi satu soal tie-break secara lisan.</li>
-  </ol>
-  <p class="sub">Catatan: skor dihitung otomatis di halaman ini. Guru/operator mengklik jawaban dan tombol pemeriksaan. Suara menggunakan fitur text-to-speech pada browser; pastikan perangkat tidak dalam mode senyap.</p>
-  <div class="actions"><button onclick="startGame()">MULAI PERTANDINGAN</button></div>
- </div>
- <div class="panel"><h3 class="mini-title">Naskah Pengisi Suara</h3>
-  <p><b>Audio 1 — Intro:</b> “Selamat datang, para champion! Kalian berada di arena Clash of Champions Informatika kelas 9 bersama Bapak Herianto Simorangkir, S. Kom. Hari ini kita akan menguji kemampuan tentang Manajemen Keamanan Data dan Perlindungan Privasi. Siapkan strategi terbaik, jaga kekompakan, dan jadilah juara yang cerdas serta bertanggung jawab di dunia digital!”</p>
-  <p><b>Audio 2 — Aturan:</b> “Pertandingan mempertemukan Tim Alpha dan Tim Beta. Pilih kategori Easy bernilai seratus poin, Medium dua ratus poin, atau Hard tiga ratus poin. Setiap soal memiliki batas waktu. Jawaban benar menambah poin, sedangkan jawaban salah tidak menambah poin. Setelah menjawab, simak pembahasan untuk memahami konsepnya. Tim dengan skor tertinggi di akhir permainan akan menjadi Champion!”</p>
-  <p><b>Audio 3 — Transisi:</b> “Arena telah dibuka! Tim yang mendapat giliran, silakan pilih satu kotak soal pada papan. Pikirkan jawabannya, diskusikan dengan cepat, dan tunjukkan bahwa tim kalian siap menjadi champion!”</p>
-  <p><b>Audio 4 — Outro:</b> “Pertandingan telah selesai! Selamat kepada tim pemenang Clash of Champions! Untuk tim yang belum menang, kalian tetap luar biasa karena telah belajar dan berani mencoba. Terus lindungi data pribadi, berpikir kritis, dan gunakan teknologi dengan bijak. Sampai jumpa di tantangan berikutnya!”</p>
- </div>
-</section>
+    <div class="quiz-container">
+        <h1 id="quiz-title">Kuis Kilat Pengetahuan</h1>
+        
+        <div id="quiz-box">
+            <div class="timer-bar">
+                <div class="timer-fill" id="timer-fill"></div>
+            </div>
+            <div class="score-info">
+                <span id="question-number">Soal 1 dari 4</span>
+                <span id="score-text">Skor: 0</span>
+            </div>
+            <div class="question" id="question-text">Memuat pertanyaan...</div>
+            <div class="options-container" id="options-container"></div>
+        </div>
 
-<section id="arena" class="screen">
- <h2 class="section-title">🏆 Arena Pertandingan</h2>
- <div class="scoreboard">
-  <div class="team alpha"><h3>🔷 TIM ALPHA</h3><div class="score" id="scoreA">0</div><small>POIN</small></div>
-  <div class="team beta"><h3>🔺 TIM BETA</h3><div class="score" id="scoreB">0</div><small>POIN</small></div>
- </div>
- <div class="panel">
-  <div class="two-col">
-   <div><div class="mini-title">TIM YANG SEDANG BERGILIRAN</div><div class="field" style="margin-top:8px"><button id="turnA" class="cyan" onclick="setTurn('A')">Tim Alpha</button><button id="turnB" class="pink" onclick="setTurn('B')">Tim Beta</button></div></div>
-   <div><div class="mini-title">PENGATURAN</div><label><input type="checkbox" id="penalty"> Aktifkan penalti salah (−50 poin)</label><p class="sub" style="margin:5px 0">Pilih tim sebelum membuka soal.</p></div>
-  </div>
- </div>
- <h2 class="section-title">Papan Pilih Soal</h2>
- <p class="sub">Easy = 100 poin • Medium = 200 poin • Hard = 300 poin • Isian = 200 poin</p>
- <div class="board" id="board"></div>
- <div class="actions"><button class="secondary" onclick="speak('Arena telah dibuka! Tim yang mendapat giliran, silakan pilih satu kotak soal pada papan. Pikirkan jawabannya, diskusikan dengan cepat, dan tunjukkan bahwa tim kalian siap menjadi champion!')">🔊 Putar instruksi</button><button class="green" onclick="showChampion()">AKHIRI & LIHAT CHAMPION</button></div>
-</section>
+        <div id="result-box" class="hidden">
+            <h2>Kuis Selesai! 🎉</h2>
+            <p id="final-score" style="font-size: 20px; margin: 15px 0; color: #333;"></p>
+            <p id="feedback-text" style="color: #666; margin-bottom: 20px;"></p>
+            <button class="restart-btn" onclick="restartQuiz()">Main Lagi</button>
+        </div>
+    </div>
 
-<section id="play" class="screen">
- <div class="question-card panel">
-  <div class="q-top"><span id="qCategory">EASY • 100 POIN</span><span>Menjawab: <b id="qTeam">Tim Alpha</b></span><span class="timer" id="timer">⏱ 30</span></div>
-  <div class="question" id="qText"></div>
-  <div id="options" class="options"></div>
-  <div id="writtenArea" class="hidden"><input id="writtenAnswer" placeholder="Ketik jawabanmu di sini..." style="width:100%;padding:14px;border-radius:10px;background:#081326;color:white;border:1px solid #526583"><div class="actions"><button onclick="checkWritten()">Kirim Jawaban</button></div></div>
-  <div id="feedback" class="feedback hidden"></div>
-  <div class="actions" id="afterActions" style="display:none"><button class="green" onclick="backToBoard()">KEMBALI KE PAPAN</button><button class="secondary" onclick="speakCurrentExplanation()">🔊 Dengarkan Pembahasan</button></div>
- </div>
-</section>
+    <script>
+        const quizData = [
+            {
+                question: "Berapakah hasil dari 12 dikali 8?",
+                options: ["84", "96", "104", "88"],
+                answer: 1
+            },
+            {
+                question: "Ibu kota negara Australia adalah...",
+                options: ["Sydney", "Melbourne", "Canberra", "Perth"],
+                answer: 2
+            },
+            {
+                question: "Bahasa pemrograman apa yang berjalan di sisi browser (client-side)?",
+                options: ["PHP", "Python", "JavaScript", "C++"],
+                answer: 2
+            },
+            {
+                question: "Planet apa yang dijuluki sebagai Planet Merah?",
+                options: ["Venus", "Mars", "Jupiter", "Saturnus"],
+                answer: 1
+            }
+        ];
 
-<section id="champion" class="screen">
- <div class="panel win">
-  <div class="trophy">🏆</div><div class="eyebrow">VICTORY CEREMONY</div><h1 class="winner" id="winnerName">CHAMPION!</h1>
-  <h2 id="finalScore"></h2><p class="sub" id="outroText"></p>
-  <div class="scoreboard"><div class="team alpha"><h3>🔷 TIM ALPHA</h3><div class="score" id="finalA">0</div></div><div class="team beta"><h3>🔺 TIM BETA</h3><div class="score" id="finalB">0</div></div></div>
-  <div class="actions"><button onclick="speakOutro()">🔊 Putar Pengumuman</button><button class="secondary" onclick="location.reload()">MAIN LAGI</button></div>
- </div>
-</section>
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timer;
+        let timeLeft = 10;
+        const TIME_PER_QUESTION = 10;
 
-<section id="guide2" class="screen"></section>
-</main>
-<footer>Clash of Champions • Informatika Kelas 9 / Fase D • Herianto Simorangkir, S. Kom</footer>
-<script>
-const questions = [
-{type:'mc',level:'Easy',p:100,q:'Apa yang dimaksud dengan data pribadi?',o:['Informasi yang dapat mengidentifikasi seseorang','Semua berita di internet','Hanya nama aplikasi','Informasi yang selalu boleh dibagikan'],a:0,e:'Data pribadi adalah informasi tentang seseorang yang dapat digunakan untuk mengenali atau mengidentifikasinya, misalnya nama lengkap, alamat, nomor telepon, dan data identitas.'},
-{type:'mc',level:'Easy',p:100,q:'Manakah contoh kata sandi yang paling kuat?',o:['12345678','password','Budi2009','K7!mP#92zQ'],a:3,e:'Kata sandi kuat memiliki kombinasi huruf besar-kecil, angka, dan simbol, cukup panjang, serta tidak mudah ditebak.'},
-{type:'mc',level:'Easy',p:100,q:'Apa tindakan yang tepat ketika menerima tautan mencurigakan dari orang tidak dikenal?',o:['Langsung membukanya','Memeriksa pengirim dan tidak mengeklik tautan','Meneruskan ke semua teman','Mengisi data agar tahu isinya'],a:1,e:'Tautan mencurigakan dapat mengarah ke phishing atau malware. Periksa sumbernya dan jangan memasukkan informasi pribadi.'},
-{type:'mc',level:'Easy',p:100,q:'Mengapa kita tidak boleh membagikan PIN kepada teman?',o:['Agar PIN terlihat keren','Karena PIN melindungi akses akun atau perangkat','Supaya teman tidak lupa','Agar internet lebih cepat'],a:1,e:'PIN adalah rahasia autentikasi. Membagikannya memungkinkan orang lain mengakses akun atau perangkat.'},
-{type:'mc',level:'Easy',p:100,q:'Informasi manakah yang sebaiknya tidak diunggah secara terbuka?',o:['Foto pemandangan umum','Jadwal pelajaran tanpa identitas','Alamat rumah dan nomor telepon pribadi','Poster kegiatan sekolah umum'],a:2,e:'Alamat rumah dan nomor telepon merupakan data pribadi yang dapat disalahgunakan jika tersebar.'},
-{type:'mc',level:'Easy',p:100,q:'Apa arti logout setelah menggunakan akun di komputer umum?',o:['Menghapus internet','Keluar dari akun agar tidak dapat diakses pengguna berikutnya','Mematikan monitor','Mengganti nama akun'],a:1,e:'Logout mengakhiri sesi akun sehingga orang lain yang memakai perangkat tidak langsung memperoleh akses.'},
-{type:'mc',level:'Easy',p:100,q:'Apa yang dimaksud dengan privasi digital?',o:['Kebebasan mengakses semua akun','Perlindungan kendali atas informasi pribadi di lingkungan digital','Kecepatan mengunduh file','Menghapus semua aplikasi'],a:1,e:'Privasi digital berkaitan dengan bagaimana data pribadi dikumpulkan, digunakan, disimpan, dan dibagikan.'},
-{type:'mc',level:'Easy',p:100,q:'Jika teman meminta kata sandi akun gim milikmu, tindakan paling aman adalah ...',o:['Memberikannya jika teman dekat','Mengirimkannya lewat komentar','Menolak membagikan kata sandi','Menuliskannya di grup kelas'],a:2,e:'Kata sandi tidak boleh dibagikan. Gunakan fitur berbagi resmi bila memang diperlukan, bukan memberikan kredensial.'},
-{type:'mc',level:'Easy',p:100,q:'Apa fungsi utama kunci layar pada ponsel?',o:['Membuat baterai penuh','Mencegah akses tanpa izin','Memperbesar kapasitas memori','Menghapus virus otomatis'],a:1,e:'Kunci layar dengan PIN, pola, kata sandi, atau biometrik membantu mencegah orang lain membuka perangkat.'},
-{type:'mc',level:'Easy',p:100,q:'Manakah kebiasaan aman saat memakai Wi-Fi publik?',o:['Mengakses semua akun penting tanpa perlindungan','Membagikan kata sandi kepada orang sekitar','Menghindari transaksi sensitif dan memakai koneksi aman','Mematikan kunci layar'],a:2,e:'Wi-Fi publik dapat memiliki risiko penyadapan. Hindari aktivitas sensitif dan pastikan situs menggunakan HTTPS.'},
+        const questionText = document.getElementById("question-text");
+        const optionsContainer = document.getElementById("options-container");
+        const questionNumber = document.getElementById("question-number");
+        const scoreText = document.getElementById("score-text");
+        const timerFill = document.getElementById("timer-fill");
+        const quizBox = document.getElementById("quiz-box");
+        const resultBox = document.getElementById("result-box");
+        const finalScore = document.getElementById("final-score");
+        const feedbackText = document.getElementById("feedback-text");
 
-{type:'mc',level:'Medium',p:200,q:'Apa yang dimaksud dengan autentikasi dua faktor (2FA)?',o:['Memakai dua nama pengguna','Verifikasi identitas dengan dua jenis bukti','Mengganti kata sandi dua kali sehari','Membuat dua akun yang sama'],a:1,e:'2FA menambahkan lapisan keamanan, misalnya kata sandi ditambah kode sekali pakai atau persetujuan pada perangkat.'},
-{type:'mc',level:'Medium',p:200,q:'Pesan mengaku dari bank meminta kata sandi melalui tautan. Ini kemungkinan merupakan ...',o:['Phishing','Backup','Enkripsi','Kompresi'],a:0,e:'Phishing adalah upaya menipu korban agar memberikan data rahasia melalui pesan atau situs palsu.'},
-{type:'mc',level:'Medium',p:200,q:'Mengapa pembaruan sistem operasi penting untuk keamanan?',o:['Selalu menghapus seluruh file','Menutup celah keamanan dan memperbaiki kerentanan','Membuat kata sandi tidak diperlukan','Menghilangkan kebutuhan antivirus'],a:1,e:'Pembaruan sering membawa perbaikan keamanan untuk menutup kerentanan yang dapat dimanfaatkan penyerang.'},
-{type:'mc',level:'Medium',p:200,q:'Apa tujuan melakukan backup data secara berkala?',o:['Membuat data tersebar','Memiliki salinan untuk pemulihan jika data hilang atau rusak','Membagikan data ke publik','Mengurangi keamanan akun'],a:1,e:'Backup menyediakan salinan cadangan sehingga data dapat dipulihkan setelah kerusakan perangkat, kesalahan, atau serangan.'},
-{type:'mc',level:'Medium',p:200,q:'Saat aplikasi meminta izin akses lokasi padahal tidak membutuhkannya, sebaiknya ...',o:['Selalu izinkan','Berikan semua izin','Tolak atau batasi izin yang tidak relevan','Hapus kata sandi'],a:2,e:'Terapkan prinsip minimisasi data dan izin seperlunya. Aplikasi hanya perlu memperoleh akses yang relevan dengan fungsinya.'},
-{type:'mc',level:'Medium',p:200,q:'Apa perbedaan utama HTTP dan HTTPS?',o:['HTTPS menambahkan enkripsi koneksi melalui TLS','HTTP selalu lebih aman','HTTPS tidak memakai jaringan','Tidak ada perbedaan'],a:0,e:'HTTPS melindungi komunikasi antara browser dan situs dengan TLS, sehingga data lebih sulit disadap atau diubah saat transit.'},
-{type:'mc',level:'Medium',p:200,q:'Jejak digital adalah ...',o:['Bekas sepatu di lantai','Rekaman aktivitas yang ditinggalkan saat menggunakan layanan digital','Kode untuk mempercepat komputer','File yang selalu terhapus otomatis'],a:1,e:'Jejak digital mencakup unggahan, komentar, pencarian, dan aktivitas online lain yang dapat tersimpan atau tersebar.'},
-{type:'mc',level:'Medium',p:200,q:'Mengapa menggunakan kata sandi berbeda untuk setiap akun lebih aman?',o:['Agar mudah lupa','Jika satu akun bocor, akun lain tidak otomatis memakai sandi yang sama','Agar perangkat lebih ringan','Supaya akun tidak perlu diverifikasi'],a:1,e:'Kata sandi unik membatasi dampak kebocoran. Pengelola kata sandi dapat membantu menyimpan sandi yang berbeda.'},
-{type:'mc',level:'Medium',p:200,q:'Apa tindakan pertama jika akun media sosial diduga diretas?',o:['Membiarkannya','Segera ganti kata sandi dari perangkat aman dan amankan metode pemulihan','Membagikan kode OTP','Menghapus semua kontak'],a:1,e:'Amankan akun melalui kanal resmi, ganti kata sandi, keluar dari sesi asing, aktifkan 2FA, dan periksa data pemulihan.'},
-{type:'mc',level:'Medium',p:200,q:'Apa fungsi enkripsi?',o:['Mengubah data menjadi bentuk yang hanya dapat dibaca dengan kunci yang sesuai','Menghapus data permanen','Mempercepat pengisian baterai','Membuat akun anonim otomatis'],a:0,e:'Enkripsi mengubah informasi menjadi bentuk tersandi agar pihak tanpa kunci yang tepat tidak dapat membacanya.'},
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            quizBox.classList.remove("hidden");
+            resultBox.classList.add("hidden");
+            loadQuestion();
+        }
 
-{type:'mc',level:'Hard',p:300,q:'Sebuah sekolah menyimpan data siswa. Prinsip minimisasi data berarti sekolah sebaiknya ...',o:['Mengumpulkan semua informasi yang mungkin berguna','Mengumpulkan hanya data yang diperlukan untuk tujuan yang jelas','Membagikan data ke semua pihak','Menyimpan data tanpa batas waktu'],a:1,e:'Minimisasi data berarti membatasi pengumpulan pada data yang relevan dan diperlukan, bukan mengumpulkan sebanyak mungkin.'},
-{type:'mc',level:'Hard',p:300,q:'Mengapa kode OTP tidak boleh diberikan kepada siapa pun, termasuk orang yang mengaku petugas?',o:['OTP hanya berlaku saat siang','OTP dapat menjadi bukti verifikasi untuk mengambil alih akses akun','OTP adalah nama pengguna','OTP memperlambat internet'],a:1,e:'OTP adalah kode rahasia sekali pakai. Penipu dapat memakainya untuk melewati proses verifikasi dan mengambil alih akun.'},
-{type:'mc',level:'Hard',p:300,q:'Apa risiko utama menggunakan satu kata sandi yang sama pada banyak layanan?',o:['Credential stuffing: sandi bocor dicoba pada layanan lain','Semua akun otomatis terenkripsi','Perangkat menjadi lebih dingin','Tidak ada risiko jika sandi panjang'],a:0,e:'Penyerang dapat mencoba kombinasi kredensial yang bocor pada banyak situs. Sandi unik mengurangi risiko ini.'},
-{type:'mc',level:'Hard',p:300,q:'Sebuah file penting dienkripsi ransomware. Strategi pemulihan yang paling tepat adalah ...',o:['Membayar tanpa pertimbangan','Memutus perangkat terdampak dari jaringan, melapor, dan memulihkan dari backup bersih','Mengirim file ke semua teman','Mematikan semua pengamanan'],a:1,e:'Isolasi membantu mencegah penyebaran. Laporkan insiden dan pulihkan dari cadangan yang diketahui bersih setelah sistem ditangani.'},
-{type:'mc',level:'Hard',p:300,q:'Apa tujuan prinsip least privilege dalam pengelolaan akses?',o:['Semua pengguna menjadi administrator','Setiap pengguna mendapat hak akses minimum sesuai tugasnya','Semua akun memakai satu sandi','Akses tidak pernah ditinjau'],a:1,e:'Least privilege membatasi hak akses sesuai kebutuhan kerja sehingga dampak kesalahan atau kompromi akun lebih kecil.'},
-{type:'mc',level:'Hard',p:300,q:'Mengapa persetujuan pengguna penting sebelum data pribadinya dikumpulkan atau dibagikan?',o:['Agar data bisa dijual bebas','Agar pengguna memahami tujuan dan memberi persetujuan secara sadar sesuai aturan','Agar aplikasi tidak perlu aman','Agar semua data menjadi publik'],a:1,e:'Persetujuan yang bermakna membantu pengguna memahami tujuan pemrosesan dan mengendalikan penggunaan data sesuai ketentuan yang berlaku.'},
-{type:'mc',level:'Hard',p:300,q:'Apa langkah yang paling tepat untuk mengurangi risiko kebocoran data saat mengirim dokumen sensitif?',o:['Mengirim tautan publik tanpa batas','Memakai kanal aman, membatasi penerima, dan memberi akses seperlunya','Mengunggahnya ke komentar publik','Mengirim kata sandi di grup terbuka'],a:1,e:'Gunakan kanal tepercaya, enkripsi bila tersedia, pembatasan akses, dan verifikasi penerima sebelum mengirim.'},
-{type:'mc',level:'Hard',p:300,q:'Mengapa log aktivitas penting dalam keamanan sistem?',o:['Mencatat aktivitas untuk membantu audit dan investigasi insiden','Menghapus seluruh jejak digital','Menggantikan semua kontrol akses','Membuat data tidak perlu dicadangkan'],a:0,e:'Log membantu mengetahui siapa melakukan apa dan kapan, sehingga anomali dapat dianalisis dan insiden ditelusuri.'},
-{type:'mc',level:'Hard',p:300,q:'Apa yang dimaksud rekayasa sosial (social engineering)?',o:['Membangun jaringan sosial','Manipulasi psikologis agar korban mengungkapkan informasi atau melakukan tindakan tertentu','Memperbaiki perangkat keras','Mengenkripsi jaringan'],a:1,e:'Social engineering mengeksploitasi kepercayaan, rasa takut, atau urgensi untuk memanipulasi korban, bukan semata-mata kelemahan teknis.'},
-{type:'mc',level:'Hard',p:300,q:'Sebuah layanan meminta tanggal lahir lengkap, alamat, dan nomor identitas padahal hanya untuk kuis sederhana. Sikap paling kritis adalah ...',o:['Mengisi semua data agar bisa bermain','Mempertanyakan kebutuhan, membaca kebijakan privasi, dan tidak memberi data berlebihan','Memakai data teman','Membagikan data di media sosial'],a:1,e:'Periksa apakah data benar-benar diperlukan dan bagaimana digunakan. Hindari memberikan data sensitif untuk tujuan yang tidak sebanding.'}
-];
+        function loadQuestion() {
+            clearInterval(timer);
+            resetTimer();
 
-const written = [
-{type:'written',level:'Easy',p:200,q:'Sebutkan satu contoh data pribadi yang perlu dijaga kerahasiaannya.',a:['alamat rumah','nomor telepon','nomor induk kependudukan','nik','nomor ktp','kata sandi','password','pin','tanggal lahir','nomor rekening'],e:'Contohnya alamat rumah, nomor telepon, NIK, kata sandi, PIN, atau nomor rekening. Data tersebut perlu dijaga agar tidak disalahgunakan.'},
-{type:'written',level:'Easy',p:200,q:'Apa istilah untuk pesan atau situs palsu yang bertujuan mencuri informasi rahasia?',a:['phishing','pishing'],e:'Phishing adalah penipuan yang menyamar sebagai pihak tepercaya untuk mencuri informasi seperti kata sandi atau OTP.'},
-{type:'written',level:'Easy',p:200,q:'Apa tindakan yang dilakukan untuk keluar dari akun setelah selesai menggunakan komputer bersama?',a:['logout','log out','keluar akun'],e:'Logout mengakhiri sesi akun agar pengguna berikutnya tidak dapat melanjutkan akses ke akun kita.'},
-{type:'written',level:'Medium',p:200,q:'Tuliskan kepanjangan singkatan 2FA.',a:['two factor authentication','two-factor authentication','autentikasi dua faktor','otentikasi dua faktor'],e:'2FA adalah Two-Factor Authentication atau autentikasi dua faktor, yaitu verifikasi dengan dua jenis bukti.'},
-{type:'written',level:'Medium',p:200,q:'Apa istilah untuk salinan cadangan data yang dibuat agar data dapat dipulihkan?',a:['backup','back up','pencadangan','cadangan data'],e:'Backup atau pencadangan adalah salinan data yang disimpan untuk pemulihan jika data utama hilang atau rusak.'},
-{type:'written',level:'Medium',p:200,q:'Apa nama teknologi yang mengubah data menjadi bentuk tersandi agar tidak mudah dibaca pihak lain?',a:['enkripsi','encryption'],e:'Enkripsi mengubah data menjadi bentuk tersandi dan hanya dapat dibaca kembali dengan kunci yang sesuai.'},
-{type:'written',level:'Hard',p:200,q:'Apa istilah prinsip pemberian hak akses minimum sesuai kebutuhan pekerjaan?',a:['least privilege','prinsip least privilege','hak akses minimum','akses minimum'],e:'Least privilege membatasi setiap akun pada hak minimum yang dibutuhkan untuk menjalankan tugas.'},
-{type:'written',level:'Hard',p:200,q:'Apa nama serangan ketika penjahat mencoba kata sandi bocor pada banyak layanan lain?',a:['credential stuffing'],e:'Credential stuffing adalah percobaan masuk otomatis menggunakan kombinasi nama pengguna dan kata sandi yang pernah bocor.'},
-{type:'written',level:'Hard',p:200,q:'Apa istilah untuk rekaman aktivitas yang ditinggalkan seseorang ketika menggunakan internet?',a:['jejak digital','digital footprint'],e:'Jejak digital adalah rekaman aktivitas online, seperti unggahan, komentar, pencarian, dan interaksi digital.'},
-{type:'written',level:'Hard',p:200,q:'Apa istilah untuk manipulasi psikologis agar seseorang membocorkan data atau melakukan tindakan berisiko?',a:['rekayasa sosial','social engineering'],e:'Rekayasa sosial memanfaatkan kepercayaan, emosi, atau tekanan agar korban memberikan informasi atau melakukan tindakan tertentu.'}
-];
+            const currentQ = quizData[currentQuestionIndex];
+            questionNumber.textContent = `Soal ${currentQuestionIndex + 1} dari ${quizData.length}`;
+            scoreText.textContent = `Skor: ${score}`;
+            questionText.textContent = currentQ.question;
+            optionsContainer.innerHTML = "";
 
-let scores={A:0,B:0},turn='A',current=null,timerId=null,timeLeft=0,soundOn=true,used=new Set(),currentExplanation='';
-const all=[...questions,...written];
-function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
-function speak(text){if(!soundOn||!('speechSynthesis'in window))return;speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(text);u.lang='id-ID';u.rate=.94;u.pitch=1.03;speechSynthesis.speak(u)}
-function toggleSound(){soundOn=!soundOn;document.getElementById('soundToggle').textContent=soundOn?'🔊 Suara: Aktif':'🔇 Suara: Mati';if(!soundOn&&'speechSynthesis'in window)speechSynthesis.cancel();else speak('Audio pengisi suara diaktifkan. Selamat bertanding!')}
-function startGame(){showScreen('guide');speak('Selamat datang, para champion! Kalian berada di arena Clash of Champions Informatika kelas 9 bersama Bapak Herianto Simorangkir, Sarjana Komputer. Hari ini kita akan menguji kemampuan tentang Manajemen Keamanan Data dan Perlindungan Privasi. Siapkan strategi terbaik, jaga kekompakan, dan jadilah juara yang cerdas serta bertanggung jawab di dunia digital!');setTimeout(()=>{if(document.getElementById('guide').classList.contains('active')){showScreen('arena');speak('Pertandingan mempertemukan Tim Alpha dan Tim Beta. Pilih kategori Easy bernilai seratus poin, Medium dua ratus poin, atau Hard tiga ratus poin. Setiap soal memiliki batas waktu. Jawaban benar menambah poin. Setelah menjawab, simak pembahasan. Tim dengan skor tertinggi akan menjadi Champion!') }},9000)}
-function setTurn(t){turn=t;document.getElementById('turnA').style.outline=t==='A'?'3px solid white':'none';document.getElementById('turnB').style.outline=t==='B'?'3px solid white':'none';}
-function buildBoard(){let board=document.getElementById('board');board.innerHTML='<div class="board-head">EASY<br>100 POIN</div><div class="board-head">MEDIUM<br>200 POIN</div><div class="board-head">HARD<br>300 POIN</div><div class="board-head">ISIAN<br>200 POIN</div><div class="board-head">STATUS</div>';let groups=[questions.filter(q=>q.level==='Easy'),questions.filter(q=>q.level==='Medium'),questions.filter(q=>q.level==='Hard'),written];for(let i=0;i<10;i++){for(let g=0;g<4;g++){let q=groups[g][i];if(!q){let blank=document.createElement('div');board.append(blank);continue}let idx=all.indexOf(q);let b=document.createElement('button');b.className='tile '+(used.has(idx)?'done':'');b.disabled=used.has(idx);b.innerHTML='<strong>'+(used.has(idx)?'✓':'SOAL '+(i+1))+'</strong><small>'+(used.has(idx)?'Selesai':q.p+' poin')+'</small>';b.onclick=()=>openQuestion(idx);board.append(b)}let status=document.createElement('div');status.className='board-head';status.style.background='#101b30';status.textContent='BARIS '+(i+1);board.append(status)}}
-function openQuestion(idx){if(used.has(idx))return;current=idx;let q=all[idx];showScreen('play');document.getElementById('qCategory').textContent=q.level.toUpperCase()+' • '+q.p+' POIN'+(q.type==='written'?' • ISIAN':'');document.getElementById('qTeam').textContent=turn==='A'?'Tim Alpha':'Tim Beta';document.getElementById('qText').textContent=q.q;document.getElementById('feedback').classList.add('hidden');document.getElementById('afterActions').style.display='none';document.getElementById('writtenArea').classList.toggle('hidden',q.type!=='written');document.getElementById('options').innerHTML='';if(q.type==='mc'){q.o.forEach((op,i)=>{let b=document.createElement('button');b.className='option';b.textContent=String.fromCharCode(65+i)+'. '+op;b.onclick=()=>checkMC(i);document.getElementById('options').append(b)})}document.getElementById('writtenAnswer').value='';timeLeft=q.level==='Easy'?30:q.level==='Medium'?45:60;document.getElementById('timer').textContent='⏱ '+timeLeft;clearInterval(timerId);timerId=setInterval(()=>{timeLeft--;document.getElementById('timer').textContent='⏱ '+timeLeft;if(timeLeft<=0){clearInterval(timerId);if(q.type==='mc')finish(false,'Waktu habis.');else finish(false,'Waktu habis. Jawaban belum dikirim.')}},1000);speak('Soal untuk '+(turn==='A'?'Tim Alpha':'Tim Beta')+'. '+q.q)}
-function checkMC(i){if(document.getElementById('afterActions').style.display==='flex')return;let q=all[current];document.querySelectorAll('.option').forEach((b,n)=>{b.disabled=true;if(n===q.a)b.classList.add('correct');if(n===i&&i!==q.a)b.classList.add('wrong')});finish(i===q.a,i===q.a?'Jawaban benar!':'Jawaban belum tepat.')}
-function checkWritten(){let q=all[current],ans=document.getElementById('writtenAnswer').value.trim().toLowerCase();if(!ans){alert('Masukkan jawaban terlebih dahulu.');return}let ok=q.a.some(a=>ans===a||ans.includes(a));finish(ok,ok?'Jawaban diterima!':'Jawaban belum sesuai. Penilaian isian dapat dikonfirmasi guru.')}
-function finish(correct,msg){clearInterval(timerId);let q=all[current];used.add(current);if(correct)scores[turn]+=q.p;else if(document.getElementById('penalty').checked)scores[turn]-=50;updateScores();currentExplanation=q.e;let fb=document.getElementById('feedback');fb.classList.remove('hidden');fb.innerHTML='<b>'+(correct?'✅ '+msg:'❌ '+msg)+'</b><br><br><b>Kunci jawaban:</b> '+(q.type==='mc'?q.o[q.a]:q.a[0])+'<br><br><b>Pembahasan singkat & konsep kunci:</b> '+q.e+'<br><br><b>Perolehan:</b> '+(correct?'+'+q.p:'0'+(document.getElementById('penalty').checked?' (−50 penalti)':''))+' poin';document.getElementById('afterActions').style.display='flex';document.querySelectorAll('.option').forEach(b=>b.disabled=true);speak((correct?'Jawaban benar. ':'Jawaban belum tepat. ')+'Kunci jawaban: '+(q.type==='mc'?q.o[q.a]:q.a[0])+'. Pembahasan. '+q.e)}
-function updateScores(){document.getElementById('scoreA').textContent=scores.A;document.getElementById('scoreB').textContent=scores.B}
-function backToBoard(){clearInterval(timerId);buildBoard();setTurn(turn==='A'?'B':'A');showScreen('arena');speak((turn==='A'?'Tim Alpha':'Tim Beta')+' mendapat giliran berikutnya. Silakan pilih soal.')}
-function speakCurrentExplanation(){speak('Pembahasan singkat dan konsep kunci. '+currentExplanation)}
-function showChampion(){clearInterval(timerId);let w=scores.A===scores.B?'HASIL SERI':scores.A>scores.B?'TIM ALPHA':'TIM BETA';document.getElementById('winnerName').textContent=w==='HASIL SERI'?'DRAW CHAMPIONS':w+' CHAMPION!';document.getElementById('finalScore').textContent='Alpha '+scores.A+' poin  —  Beta '+scores.B+' poin';document.getElementById('finalA').textContent=scores.A;document.getElementById('finalB').textContent=scores.B;document.getElementById('outroText').textContent=w==='HASIL SERI'?'Kedua tim memperoleh skor yang sama. Guru dapat memberikan satu soal tie-break.':'Selamat kepada '+w+'! Terima kasih kepada kedua tim atas semangat, kerja sama, dan sportivitasnya.';showScreen('champion');speakOutro()}
-function speakOutro(){let w=scores.A===scores.B?'Hasil pertandingan seri.':scores.A>scores.B?'Selamat kepada Tim Alpha sebagai Champion!':'Selamat kepada Tim Beta sebagai Champion!';speak('Pertandingan telah selesai! '+w+' Untuk tim yang belum menang, kalian tetap luar biasa karena telah belajar dan berani mencoba. Terus lindungi data pribadi, berpikir kritis, dan gunakan teknologi dengan bijak. Sampai jumpa di tantangan berikutnya!')}
-buildBoard();setTurn('A');
-</script>
-</body></html>
+            currentQ.options.forEach((opt, index) => {
+                const btn = document.createElement("button");
+                btn.classList.add("option-btn");
+                btn.textContent = opt;
+                btn.onclick = () => selectOption(btn, index);
+                optionsContainer.appendChild(btn);
+            });
+
+            startTimer();
+        }
+
+        function startTimer() {
+            timeLeft = TIME_PER_QUESTION;
+            updateTimerBar();
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimerBar();
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    handleTimeOut();
+                }
+            }, 1000);
+        }
+
+        function updateTimerBar() {
+            const percentage = (timeLeft / TIME_PER_QUESTION) * 100;
+            timerFill.style.width = `${percentage}%`;
+        }
+
+        function selectOption(selectedBtn, selectedIndex) {
+            clearInterval(timer);
+            const currentQ = quizData[currentQuestionIndex];
+            const allBtns = optionsContainer.querySelectorAll(".option-btn");
+
+            allBtns.forEach(btn => btn.disabled = true);
+
+            if (selectedIndex === currentQ.answer) {
+                selectedBtn.classList.add("correct");
+                score += 10;
+            } else {
+                selectedBtn.classList.add("wrong");
+                allBtns[currentQ.answer].classList.add("correct");
+            }
+
+            scoreText.textContent = `Skor: ${score}`;
+
+            setTimeout(() => {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < quizData.length) {
+                    loadQuestion();
+                } else {
+                    showResult();
+                }
+            }, 1200);
+        }
+
+        function handleTimeOut() {
+            const currentQ = quizData[currentQuestionIndex];
+            const allBtns = optionsContainer.querySelectorAll(".option-btn");
+            allBtns.forEach(btn => btn.disabled = true);
+            allBtns[currentQ.answer].classList.add("correct");
+
+            setTimeout(() => {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < quizData.length) {
+                    loadQuestion();
+                } else {
+                    showResult();
+                }
+            }, 1200);
+        }
+
+        function resetTimer() {
+            timeLeft = TIME_PER_QUESTION;
+            updateTimerFillInstant();
+        }
+
+        function updateTimerFillInstant() {
+            timerFill.style.width = "100%";
+        }
+
+        function showResult() {
+            quizBox.classList.add("hidden");
+            resultBox.classList.remove("hidden");
+            finalScore.textContent = `Skor Anda: ${score} dari ${quizData.length * 10}`;
+
+            let feedback = "";
+            if (score === 40) feedback = "Luar biasa! Kamu jenius! 🏆";
+            else if (score >= 20) feedback = "Cukup bagus, pertahankan! 👍";
+            else feedback = "Yuk, coba lagi dan tingkatkan skormu! 💪";
+
+            feedbackText.textContent = feedback;
+        }
+
+        function restartQuiz() {
+            startQuiz();
+        }
+
+        // Mulai kuis saat halaman dimuat
+        startQuiz();
+    </script>
+</body>
+</html>
