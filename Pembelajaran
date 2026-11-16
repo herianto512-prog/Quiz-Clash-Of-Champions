@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modul Interaktif 5D: Berpikir Komputasional & Pemrograman Arduino</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Inter & JetBrains Mono -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Three.js untuk Animasi 3D -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Tone.js untuk Efek Audio Dimensi ke-5 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        arduino: {
+                            teal: '#00979D',
+                            dark: '#005C5F',
+                            light: '#E5F5F5',
+                            orange: '#E47128'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00979D; 
+        }
+        /* Animasi Glow 5D */
+        .glow-5d {
+            box-shadow: 0 0 25px rgba(0, 151, 157, 0.35), inset 0 0 15px rgba(0, 151, 157, 0.2);
+        }
+        .code-block {
+            background: #0b1120;
+            border-left: 4px solid #00979D;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 0.4; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+        .animate-pulse-slow {
+            animation: pulse-ring 3s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased selection:bg-arduino-teal selection:text-white overflow-x-hidden">
+
+    <!-- Navbar Atas -->
+    <header class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <button id="toggleSidebarBtn" class="lg:hidden p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-arduino-teal to-cyan-400 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                <i class="fas fa-microchip text-slate-950 text-xl"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-base sm:text-lg tracking-tight bg-gradient-to-r from-white to-cyan-300 bg-clip-text text-transparent">
+                    EduTech 5D: Informatika & Arduino
+                </h1>
+                <p class="text-xs text-slate-400 hidden sm:block">Materi Lengkap, Pembahasan & Animasi Simulasi 5 Dimensi</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2 sm:gap-3">
+            <button id="audioToggleBtn" onclick="toggleAudioEngine()" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs sm:text-sm font-medium transition">
+                <i id="audioIcon" class="fas fa-volume-mute text-rose-400"></i>
+                <span class="hidden md:inline" id="audioLabel">Audio 5D: Mati</span>
+            </button>
+            <span class="px-3 py-1.5 rounded-full bg-cyan-950 border border-cyan-700/50 text-cyan-300 text-xs font-semibold flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+                Mode 5D Aktif
+            </span>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="flex min-h-[calc(100vh-65px)]">
+        
+        <!-- Sidebar Navigasi Bab (A - O) -->
+        <aside id="sidebar" class="fixed lg:sticky top-[65px] left-0 z-40 w-72 h-[calc(100vh-65px)] bg-slate-900 border-r border-slate-800 overflow-y-auto transition-transform duration-300 -translate-x-full lg:translate-x-0 flex-shrink-0">
+            <div class="p-4">
+                <div class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center justify-between">
+                    <span>Daftar Materi (Bab A - O)</span>
+                    <span id="progressBadge" class="bg-slate-800 text-cyan-400 px-2 py-0.5 rounded-md">1 / 15</span>
+                </div>
+                <nav id="chapterNav" class="space-y-1">
+                    <!-- Diisi secara dinamis oleh JavaScript -->
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Overlay untuk Mobile Sidebar -->
+        <div id="sidebarOverlay" onclick="closeSidebar()" class="fixed inset-0 bg-black/60 z-30 hidden lg:hidden"></div>
+
+        <!-- Konten Utama -->
+        <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
+            
+            <!-- Stage Video Animasi 5 Dimensi (3D + Timeline + Audio/Sensori + Interaksi) -->
+            <section class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden glow-5d">
+                <div class="bg-slate-950/80 px-4 py-3 border-b border-slate-800 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-1 rounded-md bg-gradient-to-r from-arduino-teal to-blue-600 text-white text-xs font-bold tracking-wide">
+                            VIDEO ANIMASI 5D
+                        </span>
+                        <h2 id="stageTitle" class="text-sm sm:text-base font-semibold text-slate-200">Simulasi Visual: Berpikir Komputasional</h2>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs text-slate-400">
+                        <span class="hidden sm:inline"><i class="fas fa-mouse mr-1 text-cyan-400"></i>Seret untuk Putar 3D</span>
+                        <span class="px-2 py-0.5 rounded bg-slate-800 text-amber-400 font-mono" id="dimensionIndicator">5D: 3D + Waktu + Audio + Haptik</span>
+                    </div>
+                </div>
+
+                <!-- Canvas 3D / 5D Stage -->
+                <div class="relative w-full h-[300px] sm:h-[380px] bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950" id="canvasContainer">
+                    <canvas id="scene5D"></canvas>
+                    
+                    <!-- HUD Overlay pada Video 5D -->
+                    <div id="hudOverlay" class="absolute top-3 left-3 bg-slate-950/75 backdrop-blur-md border border-slate-700/70 rounded-xl p-3 max-w-xs pointer-events-none">
+                        <div class="text-[11px] uppercase tracking-wider text-cyan-400 font-bold mb-1">Status Simulasi 5D</div>
+                        <p id="hudDescription" class="text-xs text-slate-300 leading-relaxed">
+                            Memvisualisasikan dekomposisi masalah menjadi blok-blok algoritma terstruktur.
+                        </p>
+                    </div>
+
+                    <!-- Serial Monitor Mini Live di dalam Video -->
+                    <div id="miniSerialMonitor" class="absolute bottom-3 right-3 bg-black/85 border border-emerald-500/40 rounded-xl p-2.5 w-60 sm:w-72 font-mono text-[11px] text-emerald-400 shadow-lg">
+                        <div class="flex items-center justify-between border-b border-emerald-900/60 pb-1 mb-1 text-[10px] text-slate-400">
+                            <span><i class="fas fa-terminal mr-1 text-emerald-400"></i>Serial Monitor (9600 baud)</span>
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        </div>
+                        <div id="serialOutput" class="h-14 overflow-y-auto space-y-0.5">
+                            <div>> Sistem 5D Siap...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kontrol Video Animasi (Timeline + Interaksi 5D) -->
+                <div class="bg-slate-900 px-4 py-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center gap-2">
+                        <button id="playPauseBtn" onclick="togglePlayAnimation()" class="px-4 py-2 rounded-xl bg-arduino-teal hover:bg-cyan-500 text-slate-950 font-bold text-xs sm:text-sm flex items-center gap-2 transition shadow-md">
+                            <i id="playIcon" class="fas fa-pause"></i>
+                            <span id="playText">Jeda Animasi</span>
+                        </button>
+                        <button onclick="trigger5DPulse()" class="px-3 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/50 text-amber-300 text-xs sm:text-sm font-medium flex items-center gap-1.5 transition">
+                            <i class="fas fa-bolt"></i>
+                            <span>Uji Impuls 5D</span>
+                        </button>
+                    </div>
+
+                    <!-- Timeline Scrubber -->
+                    <div class="flex-1 min-w-[200px] flex items-center gap-3">
+                        <span class="text-xs font-mono text-slate-400" id="timeElapsed">00:00</span>
+                        <input type="range" id="timelineSlider" min="0" max="100" value="0" class="w-full accent-cyan-400 h-1.5 bg-slate-700 rounded-lg cursor-pointer">
+                        <span class="text-xs font-mono text-slate-400">LOOP 5D</span>
+                    </div>
+
+                    <!-- Kontrol Interaktif Khusus Bab -->
+                    <div id="interactiveControls" class="flex items-center gap-2">
+                        <!-- Tombol dinamis sesuai bab -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Area Materi & Pembahasan Mendalam -->
+            <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                
+                <!-- Kolom Kiri & Tengah: Materi & Pembahasan Utama -->
+                <article class="xl:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-7 space-y-6 shadow-xl">
+                    <div class="border-b border-slate-800 pb-4 flex flex-wrap items-center justify-between gap-2">
+                        <div>
+                            <span id="chapterBadge" class="inline-block px-3 py-1 rounded-full bg-cyan-950 text-cyan-400 text-xs font-bold mb-2">
+                                BAB A
+                            </span>
+                            <h2 id="chapterTitle" class="text-xl sm:text-2xl font-extrabold text-white">
+                                Berpikir Komputasional
+                            </h2>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="prevChapter()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition">
+                                <i class="fas fa-chevron-left mr-1"></i> Sebelumnya
+                            </button>
+                            <button onclick="nextChapter()" class="px-3 py-2 rounded-xl bg-arduino-teal hover:bg-cyan-500 text-slate-950 text-xs font-bold transition">
+                                Selanjutnya <i class="fas fa-chevron-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Konten Materi Lengkap -->
+                    <div id="chapterContent" class="space-y-5 text-slate-300 leading-relaxed text-sm sm:text-base">
+                        <!-- Diisi oleh JS -->
+                    </div>
+
+                    <!-- Kotak Pembahasan Studi Kasus -->
+                    <div class="bg-slate-950/70 border border-indigo-500/30 rounded-2xl p-5 space-y-3">
+                        <div class="flex items-center gap-2 text-indigo-400 font-bold text-sm sm:text-base">
+                            <i class="fas fa-lightbulb text-amber-400"></i>
+                            <span>Pembahasan & Analisis Mendalam</span>
+                        </div>
+                        <div id="chapterDiscussion" class="text-sm text-slate-300 space-y-2 leading-relaxed">
+                            <!-- Diisi oleh JS -->
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Kolom Kanan: Kode Program Arduino & Kuis Interaktif -->
+                <aside class="space-y-6">
+                    
+                    <!-- Contoh Kode & Simulator Cepat -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-sm sm:text-base text-white flex items-center gap-2">
+                                <i class="fas fa-code text-arduino-teal"></i>
+                                <span>Implementasi Kode / Logika</span>
+                            </h3>
+                            <button onclick="copyChapterCode()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 flex items-center gap-1 transition">
+                                <i class="fas fa-copy"></i> Salin
+                            </button>
+                        </div>
+                        <pre class="code-block p-4 rounded-xl text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed"><code id="chapterCode">// Kode akan dimuat di sini</code></pre>
+                        <button onclick="runCodeIn5D()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-bold text-xs sm:text-sm shadow-lg transition flex items-center justify-center gap-2">
+                            <i class="fas fa-play-circle"></i>
+                            <span>Eksekusi ke Simulasi 5D</span>
+                        </button>
+                    </div>
+
+                    <!-- Mini Kuis Evaluasi Pemahaman -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+                        <h3 class="font-bold text-sm sm:text-base text-white flex items-center gap-2">
+                            <i class="fas fa-check-circle text-amber-400"></i>
+                            <span>Uji Pemahaman Bab Ini</span>
+                        </h3>
+                        <p id="quizQuestion" class="text-xs sm:text-sm text-slate-300 font-medium">
+                            Pertanyaan kuis akan tampil di sini.
+                        </p>
+                        <div id="quizOptions" class="space-y-2">
+                            <!-- Opsi jawaban -->
+                        </div>
+                        <div id="quizFeedback" class="hidden p-3 rounded-xl text-xs font-medium"></div>
+                    </div>
+
+                </aside>
+            </div>
+        </main>
+    </div>
+
+    <!-- Notifikasi Toast Pengganti alert() -->
+    <div id="toastBox" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-800 border border-cyan-500/50 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-sm">
+        <i class="fas fa-info-circle text-cyan-400"></i>
+        <span id="toastMessage">Pesan notifikasi</span>
+    </div>
+
+    <script>
+        // =========================================================================
+        // 1. DATABASE MATERI LENGKAP (BAB A SAMPAI BAB O)
+        // =========================================================================
+        const curriculumData = [
+            {
+                id: "A",
+                badge: "BAB A",
+                title: "Berpikir Komputasional",
+                simMode: "decomposition",
+                hud: "Visualisasi 5D: Pemecahan masalah kompleks (kubus besar) menjadi 4 pilar berpikir komputasional.",
+                content: `
+                    <p><strong>Berpikir Komputasional (Computational Thinking)</strong> adalah metode penyelesaian masalah dengan menerapkan teknik ilmu komputer (informatika). Berpikir komputasional bukan berarti memaksa manusia berpikir seperti komputer, melainkan melatih manusia merumuskan masalah secara terstruktur sehingga solusinya dapat dijalankan oleh manusia maupun mesin (seperti mikrokontroler Arduino).</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+                        <div class="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700">
+                            <h4 class="font-bold text-cyan-400 text-sm mb-1">1. Dekomposisi (Decomposition)</h4>
+                            <p class="text-xs text-slate-300">Memecah masalah besar dan kompleks menjadi bagian-bagian kecil yang lebih mudah dikelola dan diselesaikan.</p>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700">
+                            <h4 class="font-bold text-emerald-400 text-sm mb-1">2. Pengenalan Pola (Pattern Recognition)</h4>
+                            <p class="text-xs text-slate-300">Mencari kesamaan, tren, atau keteraturan di dalam data maupun sub-masalah untuk memprediksi solusi.</p>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700">
+                            <h4 class="font-bold text-amber-400 text-sm mb-1">3. Abstraksi (Abstraction)</h4>
+                            <p class="text-xs text-slate-300">Menyaring informasi yang tidak relevan dan hanya berfokus pada detail penting yang memengaruhi solusi.</p>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700">
+                            <h4 class="font-bold text-purple-400 text-sm mb-1">4. Algoritma (Algorithms)</h4>
+                            <p class="text-xs text-slate-300">Menyusun langkah-langkah logis dan berurutan (step-by-step) untuk menyelesaikan masalah tersebut.</p>
+                        </div>
+                    </div>
+                `,
+                discussion: `
+                    <p><strong>Studi Kasus:</strong> Bayangkan Anda diminta membuat <em>Sistem Penyiram Tanaman Otomatis</em> berbasis Arduino. Jika langsung dikerjakan sekaligus, akan terasa rumit.</p>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li><strong>Dekomposisi:</strong> Bagi sistem menjadi 3 bagian: pembacaan sensor kelembapan tanah, logika keputusan, dan kontrol pompa air.</li>
+                        <li><strong>Pengenalan Pola:</strong> Tanah kering selalu memiliki nilai resistansi tinggi (nilai analog > 700).</li>
+                        <li><strong>Abstraksi:</strong> Abaikan warna pot atau jenis daun; fokus hanya pada ambang batas kelembapan tanah.</li>
+                        <li><strong>Algoritma:</strong> Baca sensor -> Jika nilai > 700, nyalakan pompa 5 detik -> Matikan pompa -> Ulangi.</li>
+                    </ul>
+                `,
+                code: `// Pseudocode Algoritma Penyiram Otomatis
+MULAI
+  BACA nilai_kelembapan dari Sensor
+  JIKA (nilai_kelembapan < 30%) MAKA
+      AKTIFKAN Pompa_Air selama 5 detik
+  LAINNYA
+      MATIKAN Pompa_Air
+  AKHIR JIKA
+ULANGI TERUS`,
+                serialLog: ["> Dekomposisi aktif: 4 Modul terdeteksi", "> Pola: Stabil | Abstraksi: Optimal", "> Algoritma siap dieksekusi"],
+                quiz: {
+                    q: "Menyaring informasi yang tidak penting dan hanya fokus pada inti permasalahan dalam berpikir komputasional disebut...",
+                    options: ["Dekomposisi", "Abstraksi", "Pengenalan Pola", "Debugging"],
+                    answer: 1,
+                    explain: "Tepat! Abstraksi berfokus pada penyaringan detail yang tidak relevan agar solusi lebih efisien."
+                }
+            },
+            {
+                id: "B",
+                badge: "BAB B",
+                title: "Manfaat dan Cara Berpikir Komputasional",
+                simMode: "search_logic",
+                hud: "Visualisasi 5D: Pencarian target (Search), Gerbang Logika (AND/OR), dan Analisis Data.",
+                content: `
+                    <p>Penerapan berpikir komputasional meningkatkan efisiensi pemecahan masalah dalam kehidupan sehari-hari maupun pemrograman perangkat keras. Berikut adalah tiga aktivitas utamanya:</p>
+                    <div class="space-y-3 mt-2">
+                        <div class="p-4 rounded-xl bg-slate-800/60 border-l-4 border-cyan-400">
+                            <h4 class="font-bold text-white text-sm">1. Berpikir Komputasional untuk Aktivitas Aturan Mencari Kata (Search)</h4>
+                            <p class="text-xs text-slate-300 mt-1">Pencarian (Searching) adalah proses menemukan data tertentu dalam sekumpulan data. Dua metode utamanya adalah <strong>Linear Search</strong> (memeriksa satu per satu dari awal hingga akhir) dan <strong>Binary Search</strong> (membagi dua kumpulan data yang sudah terurut sehingga pencarian jauh lebih cepat).</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-800/60 border-l-4 border-amber-400">
+                            <h4 class="font-bold text-white text-sm">2. Berpikir Komputasional untuk Aktivitas Logika</h4>
+                            <p class="text-xs text-slate-300 mt-1">Menggunakan penalaran deduktif dan induktif serta operator logika (<strong>AND, OR, NOT</strong>) untuk menarik kesimpulan yang valid dari premis-premis yang tersedia.</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-800/60 border-l-4 border-emerald-400">
+                            <h4 class="font-bold text-white text-sm">3. Berpikir Komputasional untuk Aktivitas Analisis</h4>
+                            <p class="text-xs text-slate-300 mt-1">Mengevaluasi efisiensi solusi (kompleksitas waktu dan ruang), mengidentifikasi celah kesalahan (bug), serta mengoptimalkan langkah kerja agar hemat sumber daya.</p>
+                        </div>
+                    </div>
+                `,
+                discussion: `
+                    <p><strong>Analisis Pencarian Kata & Logika:</strong> Dalam kamus berisi 1.000 kata terurut, mencari kata <em>"Arduino"</em> menggunakan <strong>Linear Search</strong> bisa memakan hingga 1.000 langkah. Namun dengan <strong>Binary Search</strong> (membuka bagian tengah kamus lalu membuang setengah bagian yang tidak sesuai), kata tersebut ditemukan maksimal dalam <strong>10 langkah</strong> (2<sup>10</sup> = 1024).</p>
+                    <p>Dalam logika perangkat keras: Alarm kebakaran hanya berbunyi jika <code>(Sensor_Asap == AKTIF) AND (Sensor_Suhu > 60°C)</code> untuk mencegah alarm palsu akibat asap rokok biasa.</p>
+                `,
+                code: `// Implementasi Logika & Pencarian Target
+int daftarPin[] = {2, 4, 7, 8, 12, 13};
+int target = 8;
+
+// Pencarian Linear (Linear Search)
+for (int i = 0; i < 6; i++) {
+  if (daftarPin[i] == target) {
+    // Target ditemukan pada indeks ke-i!
+  }
+}`,
+                serialLog: ["> Binary Search: Target ditemukan (3 langkah)", "> Logika: TRUE && TRUE => OUTPUT HIGH", "> Efisiensi analisis: 94%"],
+                quiz: {
+                    q: "Metode pencarian yang bekerja dengan cara membagi dua ruang pencarian secara berulang pada data yang sudah terurut adalah...",
+                    options: ["Linear Search", "Random Search", "Binary Search", "Sequential Search"],
+                    answer: 2,
+                    explain: "Benar! Binary Search membagi dua area pencarian sehingga sangat cepat untuk data terurut."
+                }
+            },
+            {
+                id: "C",
+                badge: "BAB C",
+                title: "Pengenalan Pemrograman Bahasa C Arduino",
+                simMode: "arduino_board",
+                hud: "Visualisasi 5D: Arsitektur Mikrokontroler ATmega328P & Aliran Kompilasi Bahasa C.",
+                content: `
+                    <p><strong>Arduino</strong> adalah platform komputasi fisik (<em>physical computing</em>) bersifat <em>open-source</em> yang terdiri dari papan sirkuit mikrokontroler (seperti Arduino Uno dengan chip ATmega328P) dan perangkat lunak <strong>Arduino IDE</strong>.</p>
+                    <p>Bahasa pemrograman Arduino menggunakan dialek bahasa <strong>C/C++</strong> yang telah disederhanakan dengan pustaka (library) khusus agar mudah berinteraksi dengan pin input/output perangkat keras.</p>
+                    <ul class="list-disc pl-5 space-y-1.5 text-sm">
+                        <li><strong>Sketch:</strong> Sebutan untuk file kode program pada Arduino (berformat <code>.ino</code>).</li>
+                        <li><strong>Compiler (AVR-GCC):</strong> Menerjemahkan kode bahasa C yang ditulis manusia menjadi bahasa mesin (file biner <code>.hex</code>) yang dipahami oleh chip mikrokontroler.</li>
+                        <li><strong>Cross-Platform:</strong> Dapat dijalankan di Windows, macOS, maupun Linux.</li>
+                    </ul>
+                `,
+                discussion: `
+                    <p><strong>Mengapa Bahasa C digunakan pada Arduino?</strong> Bahasa C memiliki akses tingkat rendah (<em>low-level access</em>) terhadap register memori dan pin perangkat keras, namun tetap memiliki struktur sintaks yang mudah dibaca manusia. Ketika Anda menekan tombol <strong>Upload</strong> di Arduino IDE, kode C dikompilasi dan dikirim melalui kabel USB (komunikasi Serial UART) ke memori Flash mikrokontroler.</p>
+                `,
+                code: `// Contoh Sketch Bahasa C Arduino Pertama
+// Mengedipkan LED bawaan pada Pin 13
+void setup() {
+  pinMode(13, OUTPUT); // Mengatur pin 13 sebagai keluaran
+}
+
+void loop() {
+  digitalWrite(13, HIGH); // Tegangan 5V (Nyala)
+  delay(1000);            // Tunggu 1000 ms (1 detik)
+  digitalWrite(13, LOW);  // Tegangan 0V (Mati)
+  delay(1000);            // Tunggu 1 detik
+}`,
+                serialLog: ["> Compiling sketch.ino...", "> Uploading ke ATmega328P...", "> Done uploading! LED Pin 13 Blinking."],
+                quiz: {
+                    q: "Apa nama sebutan untuk file program yang ditulis pada Arduino IDE?",
+                    options: ["Script", "Sketch", "Blueprint", "Macro"],
+                    answer: 1,
+                    explain: "Tepat! Program yang ditulis di Arduino IDE disebut Sketch dengan ekstensi .ino."
+                }
+            },
+            {
+                id: "D",
+                badge: "BAB D",
+                title: "Struktur Dasar Program Arduino",
+                simMode: "structure_flow",
+                hud: "Visualisasi 5D: Aliran Eksekusi setup() (1x di awal) menuju loop() (berulang terus-menerus).",
+                content: `
+                    <p>Setiap program Arduino yang valid wajib memiliki <strong>dua fungsi utama</strong> agar dapat dikompilasi tanpa error:</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                        <div class="p-4 rounded-xl bg-cyan-950/40 border border-cyan-700/50">
+                            <h4 class="font-mono font-bold text-cyan-300 text-base mb-1">1. void setup()</h4>
+                            <p class="text-xs text-slate-300">Fungsi ini dijalankan <strong>hanya SATU KALI</strong> saat papan Arduino pertama kali dinyalakan atau ditekan tombol Reset. Digunakan untuk inisialisasi mode pin, memulai komunikasi Serial, dan pengaturan awal.</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-emerald-950/40 border border-emerald-700/50">
+                            <h4 class="font-mono font-bold text-emerald-300 text-base mb-1">2. void loop()</h4>
+                            <p class="text-xs text-slate-300">Setelah <code>setup()</code> selesai, fungsi <code>loop()</code> dijalankan <strong>secara BERULANG-ULANG tanpa henti</strong> selama Arduino mendapatkan catu daya listrik. Di sinilah logika utama program berada.</p>
+                        </div>
+                    </div>
+                `,
+                discussion: `
+                    <p><strong>Analogi Kehidupan Nyata:</strong> Fungsi <code>setup()</code> ibarat membuka pintu toko dan menyalakan lampu di pagi hari (dilakukan sekali saat buka). Sedangkan fungsi <code>loop()</code> ibarat melayani pembeli yang datang silih berganti sepanjang hari hingga toko ditutup (listrik dimatikan).</p>
+                    <p>Kata kunci <code>void</code> berarti fungsi tersebut tidak mengembalikan nilai (<em>return value</em>) apa pun setelah selesai dijalankan.</p>
+                `,
+                code: `// Struktur Wajib Minimal Program Arduino
+void setup() {
+  // Kode konfigurasi awal (dijalankan 1 kali)
+  Serial.begin(9600);
+  Serial.println("Inisialisasi Selesai!");
+}
+
+void loop() {
+  // Kode utama (dijalankan terus-menerus)
+  Serial.println("Program sedang berjalan...");
+  delay(2000);
+}`,
+                serialLog: ["> [SETUP] Inisialisasi Selesai! (1x)", "> [LOOP] Program sedang berjalan...", "> [LOOP] Program sedang berjalan..."],
+                quiz: {
+                    q: "Fungsi pada struktur dasar Arduino yang hanya dieksekusi satu kali ketika papan dinyalakan adalah...",
+                    options: ["void main()", "void loop()", "void setup()", "void start()"],
+                    answer: 2,
+                    explain: "Benar! void setup() hanya dijalankan satu kali di awal untuk konfigurasi sistem."
+                }
+            },
+            {
+                id: "E",
+                badge: "BAB E",
+                title: "Aturan (Karakteristik) Penulisan Kode Program",
+                simMode: "syntax_blocks",
+                hud: "Visualisasi 5D: Validasi Sintaks C++ (Titik Koma, Kurung Kurawal, #define, dan #include).",
+                content: `
+                    <p>Bahasa C/C++ pada Arduino bersifat <em>case-sensitive</em> (huruf besar dan kecil dibedakan, misalnya <code>pinMode</code> tidak boleh ditulis <code>pinmode</code>) dan memiliki 4 aturan penulisan fundamental:</p>
+                    <ul class="space-y-3 mt-2 text-sm">
+                        <li class="p-3 rounded-xl bg-slate-800/70">
+                            <strong class="text-cyan-400 font-mono">1. Titik Koma ( ; ) [Semicolon]:</strong> Berfungsi sebagai tanda akhir dari setiap pernyataan (statement) perintah, mirip seperti tanda titik pada akhir kalimat bahasa Indonesia. Lupa menulis <code>;</code> akan menyebabkan <em>Syntax Error</em>.
+                        </li>
+                        <li class="p-3 rounded-xl bg-slate-800/70">
+                            <strong class="text-amber-400 font-mono">2. Kurung Kurawal ( { } ) [Curly Braces]:</strong> Digunakan untuk membungkus blok kode milik sebuah fungsi (seperti <code>setup()</code>), percabangan (<code>if</code>), atau perulangan (<code>for</code>). Setiap kurung buka <code>{</code> wajib memiliki pasangan kurung tutup <code>}</code>.
+                        </li>
+                        <li class="p-3 rounded-xl bg-slate-800/70">
+                            <strong class="text-emerald-400 font-mono">3. #define:</strong> Direktif praprosesor untuk mendefinisikan konstanta makro sebelum program dikompilasi. Tidak memakan memori RAM dan <strong>tidak diakhiri titik koma</strong>.
+                        </li>
+                        <li class="p-3 rounded-xl bg-slate-800/70">
+                            <strong class="text-purple-400 font-mono">4. #include:</strong> Direktif untuk menyertakan pustaka (<em>library</em>) eksternal ke dalam program agar kita bisa memakai fungsi-fungsi tambahan (misal: sensor DHT, layar LCD, Servo).
+                        </li>
+                    </ul>
+                `,
+                discussion: `
+                    <p><strong>Tips Menghindari Error Kompilasi:</strong></p>
+                    <p>1. Jangan pernah meletakkan tanda titik koma (<code>;</code>) setelah <code>#define LED_PIN 13</code> atau <code>#include &lt;Servo.h&gt;</code> karena keduanya adalah direktif praprosesor, bukan pernyataan C biasa.</p>
+                    <p>2. Gunakan fitur <em>Auto Format</em> (Ctrl+T di Arduino IDE) untuk merapikan indentasi kurung kurawal <code>{ }</code> agar mudah melacak blok kode yang belum tertutup.</p>
+                `,
+                code: `#include <Servo.h>    // Menyertakan library Servo (tanpa ;)
+#define PIN_LED 13    // Mendefinisikan konstanta PIN_LED = 13 (tanpa ;)
+
+void setup() {        // Awal blok setup
+  pinMode(PIN_LED, OUTPUT); // Diakhiri titik koma (;)
+}                     // Akhir blok setup
+
+void loop() {         // Awal blok loop
+  digitalWrite(PIN_LED, HIGH);
+}                     // Akhir blok loop`,
+                serialLog: ["> Preprocessor: #include <Servo.h> OK", "> Macro: PIN_LED diganti menjadi 13", "> Syntax Check: 0 Error, 0 Warning"],
+                quiz: {
+                    q: "Manakah penulisan direktif #define yang paling benar pada pemrograman Arduino?",
+                    options: ["#define LED 13;", "#define LED = 13;", "#define LED 13", "define #LED 13"],
+                    answer: 2,
+                    explain: "Tepat! #define tidak menggunakan tanda sama dengan (=) maupun titik koma (;) di akhir baris."
+                }
+            },
+            {
+                id: "F",
+                badge: "BAB F",
+                title: "Variabel pada Pemrograman Arduino",
+                simMode: "memory_cells",
+                hud: "Visualisasi 5D: Alokasi Sel Memori SRAM Arduino untuk int, float, char, dan boolean.",
+                content: `
+                    <p><strong>Variabel</strong> adalah wadah penyimpanan data di dalam memori SRAM mikrokontroler yang nilainya dapat berubah-ubah selama program berjalan. Setiap variabel harus memiliki <strong>tipe data</strong> dan <strong>nama unik</strong>.</p>
+                    <div class="overflow-x-auto mt-2">
+                        <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                            <thead>
+                                <tr class="bg-slate-800 text-cyan-300 border-b border-slate-700">
+                                    <th class="p-2.5">Tipe Data</th>
+                                    <th class="p-2.5">Ukuran</th>
+                                    <th class="p-2.5">Jangkauan Nilai & Kegunaan</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800">
+                                <tr>
+                                    <td class="p-2.5 font-mono text-amber-400">int</td>
+                                    <td class="p-2.5">2 Byte</td>
+                                    <td class="p-2.5">Bilangan bulat (-32.768 s/d 32.767). Paling sering dipakai untuk pin & nilai sensor.</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-mono text-amber-400">float</td>
+                                    <td class="p-2.5">4 Byte</td>
+                                    <td class="p-2.5">Bilangan desimal/pecahan (misal: <code>27.5</code> derajat Celcius).</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-mono text-amber-400">boolean / bool</td>
+                                    <td class="p-2.5">1 Byte</td>
+                                    <td class="p-2.5">Nilai logika kebenaran: hanya <code>true</code> atau <code>false</code>.</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-mono text-amber-400">char</td>
+                                    <td class="p-2.5">1 Byte</td>
+                                    <td class="p-2.5">Menyimpan satu karakter tunggal dalam tanda petik tunggal, misal <code>'A'</code>.</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-mono text-amber-400">String</td>
+                                    <td class="p-2.5">Dinamis</td>
+                                    <td class="p-2.5">Menyimpan rangkaian teks dalam tanda petik ganda, misal <code>"Halo Arduino"</code>.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `,
+                discussion: `
+                    <p><strong>Variabel Global vs Variabel Lokal:</strong></p>
+                    <p>• <strong>Variabel Global</strong> dideklarasikan di paling atas (di luar <code>setup()</code> dan <code>loop()</code>). Variabel ini bisa dibaca dan diubah oleh seluruh fungsi di dalam program.</p>
+                    <p>• <strong>Variabel Lokal</strong> dideklarasikan di dalam kurung kurawal fungsi tertentu (misal hanya di dalam <code>loop()</code>) dan hanya dikenali di dalam blok tersebut.</p>
+                `,
+                code: `// Deklarasi Variabel Global
+int jumlahTekan = 0;         // Bilangan bulat
+float suhuRuangan = 28.45;   // Bilangan desimal
+boolean statusLampu = false; // Logika benar/salah
+char kodeGrade = 'A';        // Karakter tunggal
+String pesan = "Sistem OK";  // Teks
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  jumlahTekan = jumlahTekan + 1;
+  delay(1000);
+}`,
+                serialLog: ["> SRAM Allocated: int(2B), float(4B), bool(1B)", "> suhuRuangan = 28.45 C", "> jumlahTekan bertambah +1"],
+                quiz: {
+                    q: "Tipe data apa yang paling tepat digunakan untuk menyimpan hasil pembacaan suhu sebesar 36.75 derajat Celcius?",
+                    options: ["int", "boolean", "float", "char"],
+                    answer: 2,
+                    explain: "Benar! Tipe data float digunakan untuk menyimpan angka pecahan atau desimal."
+                }
+            },
+            {
+                id: "G",
+                badge: "BAB G",
+                title: "Operator pada Program Arduino",
+                simMode: "alu_operators",
+                hud: "Visualisasi 5D: Unit Aritmatika & Logika (ALU) memproses operasi Matematis, Perbandingan, Boolean, & Bitwise.",
+                content: `
+                    <p><strong>Operator</strong> adalah simbol khusus yang memberi tahu compiler untuk melakukan manipulasi matematis atau logis tertentu.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2 text-xs sm:text-sm">
+                        <div class="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700">
+                            <h4 class="font-bold text-cyan-400 mb-1">1. Operator Matematis</h4>
+                            <p>Digunakan untuk perhitungan angka: <code>+</code> (tambah), <code>-</code> (kurang), <code>*</code> (kali), <code>/</code> (bagi), <code>%</code> (modulo / sisa bagi), dan <code>=</code> (penugasan/assignment).</p>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700">
+                            <h4 class="font-bold text-amber-400 mb-1">2. Operator Perbandingan</h4>
+                            <p>Membandingkan dua nilai dan menghasilkan <code>true</code> atau <code>false</code>: <code>==</code> (sama dengan), <code>!=</code> (tidak sama dengan), <code>&lt;</code> (kurang dari), <code>&gt;</code> (lebih dari), <code>&lt;=</code>, <code>&gt;=</code>.</p>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700">
+                            <h4 class="font-bold text-emerald-400 mb-1">3. Operator Boolean</h4>
+                            <p>Menggabungkan kondisi logika: <code>&&</code> (LOGICAL AND - benar jika keduanya benar), <code>||</code> (LOGICAL OR - benar jika salah satu benar), <code>!</code> (LOGICAL NOT - membalikkan nilai).</p>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700">
+                            <h4 class="font-bold text-purple-400 mb-1">4. Operator Bitwise</h4>
+                            <p>Memanipulasi data langsung pada level bit biner (0 dan 1): <code>&amp;</code> (Bitwise AND), <code>|</code> (Bitwise OR), <code>^</code> (XOR), <code>~</code> (NOT), <code>&lt;&lt;</code> (geser bit kiri), <code>&gt;&gt;</code> (geser bit kanan).</p>
+                        </div>
+                    </div>
+                `,
+                discussion: `
+                    <p><strong>Kesalahan Paling Umum Pemula:</strong> Membedakan tanda <code>=</code> (satu sama dengan) dan <code>==</code> (dua sama dengan).</p>
+                    <p>• <code>x = 5;</code> artinya <strong>memasukkan</strong> angka 5 ke variabel x.<br>
+                    • <code>if (x == 5)</code> artinya <strong>memeriksa apakah</strong> nilai x sama dengan 5.</p>
+                    <p>Sedangkan pada Bitwise: <code>5 & 3</code> dalam biner adalah <code>0101 & 0011 = 0001</code> (hasilnya 1).</p>
+                `,
+                code: `int a = 10, b = 3;
+int sisaBagi = a % b;          // Matematis: 10 % 3 = 1
+boolean cek = (a > 5) && (b < 5); // Perbandingan & Boolean: true
+int geserBit = 1 << 3;         // Bitwise: 0001 digeser kiri 3x = 8 (1000)`,
+                serialLog: ["> Matematis: 10 % 3 = 1", "> Boolean: (10>5) && (3<5) => TRUE", "> Bitwise: 1 << 3 => 8 (Biner 1000)"],
+                quiz: {
+                    q: "Operator manakah yang digunakan untuk memeriksa apakah dua buah nilai SAMA BESAR dalam kondisi if?",
+                    options: ["=", "==", "!=", "&&"],
+                    answer: 1,
+                    explain: "Tepat! Operator == adalah operator perbandingan sama dengan, sedangkan = adalah operator penugasan."
+                }
+            },
+            {
+                id: "H",
+                badge: "BAB H",
+                title: "Serial pada Program Arduino",
+                simMode: "serial_uart",
+                hud: "Visualisasi 5D: Transmisi Paket Data Bit UART (TX/RX) dari Arduino ke Layar Komputer.",
+                content: `
+                    <p><strong>Komunikasi Serial (UART)</strong> adalah jembatan komunikasi antara papan Arduino dengan komputer melalui kabel USB. Fitur ini sangat vital untuk menampilkan nilai pembacaan sensor maupun melakukan <em>debugging</em> program.</p>
+                    <div class="space-y-3 mt-2 text-sm">
+                        <div class="p-3.5 rounded-xl bg-slate-800/70 border-l-4 border-cyan-400">
+                            <strong class="font-mono text-cyan-300">1. Serial.begin(speed)</strong>
+                            <p class="text-xs text-slate-300 mt-1">Mengaktifkan komunikasi serial dan menentukan kecepatan transfer data (<em>baud rate</em>) dalam satuan bit per detik (bps). Standar yang paling umum digunakan adalah <code>Serial.begin(9600);</code> yang diletakkan di dalam <code>void setup()</code>.</p>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-slate-800/70 border-l-4 border-amber-400">
+                            <strong class="font-mono text-amber-300">2. Serial.print(data)</strong>
+                            <p class="text-xs text-slate-300 mt-1">Mengirimkan teks atau nilai variabel ke Serial Monitor <strong>tanpa membuat baris baru</strong> (kursor tetap berada di samping kanan teks terakhir).</p>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-slate-800/70 border-l-4 border-emerald-400">
+                            <strong class="font-mono text-emerald-300">3. Serial.println(data)</strong>
+                            <p class="text-xs text-slate-300 mt-1">Mengirimkan teks atau nilai variabel ke Serial Monitor <strong>disertai karakter Enter (baris baru)</strong> di bagian akhir sehingga output berikutnya tampil di bawahnya.</p>
+                        </div>
+                    </div>
+                `,
+                discussion: `
+                    <p><strong>Kombinasi Praktis Serial.print dan Serial.println:</strong></p>
+                    <p>Agar tampilan di Serial Monitor rapi dan mudah dibaca, kita biasa menggabungkan keduanya. Gunakan <code>Serial.print()</code> untuk label keterangannya, lalu akhiri dengan <code>Serial.println()</code> untuk nilai datanya. Contoh: <code>Suhu saat ini: 29 C</code>.</p>
+                `,
+                code: `void setup() {
+  Serial.begin(9600); // Kecepatan 9600 bps
+}
+
+void loop() {
+  int nilaiSensor = 512;
+  Serial.print("Nilai Sensor: ");   // Tanpa baris baru
+  Serial.println(nilaiSensor);      // Dengan baris baru (Enter)
+  delay(1000);
+}`,
+                serialLog: ["> Baud Rate: 9600 bps tersambung", "> Nilai Sensor: 512", "> Nilai Sensor: 512"],
+                quiz: {
+                    q: "Perintah Serial manakah yang mencetak data ke Serial Monitor sekaligus memindahkan kursor ke baris baru di bawahnya?",
+                    options: ["Serial.begin()", "Serial.print()", "Serial.println()", "Serial.writeLine()"],
+                    answer: 2,
+                    explain: "Benar! Akhiran 'ln' pada Serial.println() berarti 'line' (baris baru)."
+                }
+            },
+            {
+                id: "I",
+                badge: "BAB I",
+                title: "Nilai Konstan Program Arduino",
+                simMode: "constants_logic",
+                hud: "Visualisasi 5D: Level Tegangan Logika 5V (HIGH/TRUE) vs 0V (LOW/FALSE) dan Arah Pin INPUT/OUTPUT.",
+                content: `
+                    <p>Arduino menyediakan beberapa <strong>konstanta bawaan</strong> (ditulis dengan huruf kapital semua) untuk mewakili level tegangan listrik, kondisi logika, dan arah kerja pin:</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-2 text-xs sm:text-sm">
+                        <div class="p-4 rounded-xl bg-slate-800/70 border border-slate-700">
+                            <h4 class="font-mono font-bold text-cyan-400 mb-1">1. TRUE / FALSE</h4>
+                            <p>Konstanta logika Boolean. <code>FALSE</code> bernilai <code>0</code> (salah), sedangkan <code>TRUE</code> bernilai <code>1</code> atau angka bukan nol (benar).</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-800/70 border border-slate-700">
+                            <h4 class="font-mono font-bold text-amber-400 mb-1">2. HIGH / LOW</h4>
+                            <p>Mewakili level tegangan fisik pada pin digital. <code>HIGH</code> berarti tegangan aktif (<strong>5 Volt</strong> pada Arduino Uno), sedangkan <code>LOW</code> berarti tegangan mati (<strong>0 Volt / GND</strong>).</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-800/70 border border-slate-700">
+                            <h4 class="font-mono font-bold text-emerald-400 mb-1">3. INPUT / OUTPUT</h4>
+                            <p>Digunakan pada <code>pinMode()</code>. <code>INPUT</code> mengatur pin sebagai penerima sinyal (misal tombol/sensor), sedangkan <code>OUTPUT</code> mengatur pin sebagai pengirim tegangan (misal LED/buzzer).</p>
+                        </div>
+                    </div>
+                `,
+                discussion: `
+                    <p><strong>Kesetaraan Nilai di Belakang Layar:</strong> Dalam kompilator Arduino, sebenarnya <code>HIGH</code>, <code>TRUE</code>, dan angka <code>1</code> memiliki nilai biner yang identik. Begitu pula <code>LOW</code>, <code>FALSE</code>, dan angka <code>0</code>. Namun penggunaan kata kunci <code>HIGH/LOW</code> sangat disarankan saat mengendalikan pin fisik agar kode mudah dibaca maksudnya.</p>
+                `,
+                code: `const int PIN_TOMBOL = 2;
+const int PIN_LED = 13;
+
+void setup() {
+  pinMode(PIN_TOMBOL, INPUT);  // Pin 2 menerima sinyal
+  pinMode(PIN_LED, OUTPUT);    // Pin 13 mengeluarkan tegangan
+}
+
+void loop() {
+  digitalWrite(PIN_LED, HIGH); // Mengirim 5V (HIGH)
+}`,
+                serialLog: ["> Konfigurasi Pin: INPUT & OUTPUT", "> Tegangan Output: HIGH (5.0V)", "> Status Logika: TRUE (1)"],
+                quiz: {
+                    q: "Pada papan Arduino Uno, konstanta HIGH merepresentasikan tegangan listrik sebesar...",
+                    options: ["0 Volt", "1.5 Volt", "5 Volt", "12 Volt"],
+                    answer: 2,
+                    explain: "Tepat! Pada Arduino Uno (berbasis 5V), HIGH sama dengan 5 Volt dan LOW sama dengan 0 Volt."
+                }
+            },
+            {
+                id: "J",
+                badge: "BAB J",
+                title: "Perintah Pin Digital I/O pada Arduino",
+                simMode: "digital_io",
+                hud: "Visualisasi 5D: Simulasi Push Button (digitalRead) Mengendalikan LED Merah (digitalWrite).",
+                content: `
+                    <p>Pin Digital Arduino (Pin 0 sampai 13 pada Arduino Uno) hanya mengenal dua kondisi diskrit: <strong>HIGH (1)</strong> atau <strong>LOW (0)</strong>. Tiga fungsi utamanya adalah:</p>
+                    <div class="space-y-3 mt-2 text-sm">
+                        <div class="p-3.5 rounded-xl bg-slate-800/70 border-l-4 border-cyan-400">
+                            <strong class="font-mono text-cyan-300">1. pinMode(pin, mode)</strong>
+                            <p class="text-xs text-slate-300 mt-1">Mengatur konfigurasi suatu nomor pin apakah berfungsi sebagai <code>INPUT</code>, <code>OUTPUT</code>, atau <code>INPUT_PULLUP</code>. Wajib ditulis di dalam <code>setup()</code>.</p>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-slate-800/70 border-l-4 border-amber-400">
+                            <strong class="font-mono text-amber-300">2. digitalRead(pin)</strong>
+                            <p class="text-xs text-slate-300 mt-1">Membaca kondisi sinyal digital yang masuk pada pin tertentu. Fungsi ini akan mengembalikan nilai <code>HIGH</code> (jika ada tegangan 5V) atau <code>LOW</code> (jika 0V).</p>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-slate-800/70 border-l-4 border-emerald-400">
+                            <strong class="font-mono text-emerald-300">3. digitalWrite(pin, value)</strong>
+                            <p class="text-xs text-slate-300 mt-1">Memberikan keluaran tegangan digital pada pin yang telah diatur sebagai <code>OUTPUT</code>. Parameter <code>value</code> diisi <code>HIGH</code> atau <code>LOW</code>.</p>
+                        </div>
+                    </div>
+                `,
+                discussion: `
+                    <p><strong>Alur Kerja Tombol dan Lampu:</strong> Bayangkan sebuah bel rumah. Tombol bel dihubungkan ke Pin 2 (<code>INPUT</code>) dan bel/LED ke Pin 13 (<code>OUTPUT</code>). Arduino secara terus-menerus mengecek menggunakan <code>digitalRead(2)</code>. Saat tombol ditekan (hasil bacaan <code>HIGH</code>), Arduino segera mengeksekusi <code>digitalWrite(13, HIGH)</code> untuk membunyikan bel.</p>
+                `,
+                code: `void setup() {
+  pinMode(2, INPUT);   // Pin 2 untuk membaca tombol
+  pinMode(13, OUTPUT); // Pin 13 untuk menyalakan LED
+}
+
+void loop() {
+  int statusTombol = digitalRead(2); // Baca kondisi tombol
+  if (statusTombol == HIGH) {
+    digitalWrite(13, HIGH); // Nyalakan LED
+  } else {
+    digitalWrite(13, LOW);  // Matikan LED
+  }
+}`,
+                serialLog: ["> digitalRead(2) => HIGH (Tombol Ditekan)", "> digitalWrite(13, HIGH) => LED MENYALA"],
+                quiz: {
+                    q: "Fungsi yang digunakan untuk membaca apakah sebuah tombol pada pin digital sedang ditekan (HIGH) atau dilepas (LOW) adalah...",
+                    options: ["pinMode()", "digitalWrite()", "digitalRead()", "analogRead()"],
+                    answer: 2,
+                    explain: "Benar! digitalRead(pin) membaca keadaan logika HIGH atau LOW dari sebuah pin digital."
+                }
+            },
+            {
+                id: "K",
+                badge: "BAB K",
+                title: "Perintah Pin Analog I/O pada Arduino",
+                simMode: "analog_pwm",
+                hud: "Visualisasi 5D: Konversi ADC 10-bit (0-1023) & Gelombang Modulasi Lebar Pulsa PWM (0-255).",
+                content: `
+                    <p>Berbeda dengan sinyal digital yang hanya 0 atau 1, sinyal analog memiliki rentang nilai yang bervariasi secara kontinu (misalnya suhu ruangan, intensitas cahaya, atau putaran potensiometer).</p>
+                    <div class="space-y-3 mt-2 text-sm">
+                        <div class="p-3.5 rounded-xl bg-slate-800/70 border-l-4 border-cyan-400">
+                            <strong class="font-mono text-cyan-300">1. analogRead(pin)</strong>
+                            <p class="text-xs text-slate-300 mt-1">Membaca tegangan analog (0V s/d 5V) pada pin analog (<strong>A0 – A5</strong>). Arduino memiliki komponen <strong>ADC (Analog-to-Digital Converter) 10-bit</strong> yang mengubah tegangan tersebut menjadi angka bulat antara <strong>0 hingga 1023</strong>.</p>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-slate-800/70 border-l-4 border-amber-400">
+                            <strong class="font-mono text-amber-300">2. analogWrite(pin, value)</strong>
+                            <p class="text-xs text-slate-300 mt-1">Mengeluarkan sinyal analog semu menggunakan teknik <strong>PWM (Pulse Width Modulation)</strong> pada pin digital bertanda tilde (<strong>~</strong>, yaitu pin 3, 5, 6, 9, 10, 11). Rentang nilai <code>value</code> adalah <strong>0 hingga 255</strong> (8-bit), berguna untuk mengatur tingkat kecerahan LED atau kecepatan motor DC.</p>
+                        </div>
+                    </div>
+                `,
+                discussion: `
+                    <p><strong>Konversi Skala (Fungsi map):</strong> Karena <code>analogRead()</code> menghasilkan angka <strong>0 – 1023</strong> sedangkan <code>analogWrite()</code> menerima angka <strong>0 – 255</strong>, maka saat kita ingin mengatur kecerahan LED menggunakan potensiometer, nilai pembacaan sensor dibagi 4 atau menggunakan fungsi <code>map(nilai, 0, 1023, 0, 255)</code>.</p>
+                `,
+                code: `void setup() {
+  pinMode(9, OUTPUT); // Pin 9 mendukung PWM (~9)
+}
+
+void loop() {
+  int nilaiPot = analogRead(A0);          // Baca 0 - 1023
+  int kecerahan = map(nilaiPot, 0, 1023, 0, 255); // Ubah ke 0 - 255
+  analogWrite(9, kecerahan);              // Atur redup/terang LED
+}`,
+                serialLog: ["> analogRead(A0) => 512 (2.5V)", "> PWM Duty Cycle: 50% (analogWrite 127)"],
+                quiz: {
+                    q: "Berapakah rentang nilai angka yang dihasilkan oleh perintah analogRead(A0) pada Arduino Uno?",
+                    options: ["0 hingga 1", "0 hingga 255", "0 hingga 1023", "0 hingga 4095"],
+                    answer: 2,
+                    explain: "Tepat! ADC pada Arduino Uno beresolusi 10-bit (2^10 = 1024), sehingga rentangnya 0 sampai 1023."
+                }
+            },
+            {
+                id: "L",
+                badge: "BAB L",
+                title: "Percabangan pada Program Arduino",
+                simMode: "branching_tree",
+                hud: "Visualisasi 5D: Jalur Pengambilan Keputusan Bercabang (if benar -> Jalur Hijau, else -> Jalur Merah).",
+                content: `
+                    <p><strong>Percabangan (Conditional Statement)</strong> memungkinkan program mengambil keputusan dan memilih jalur eksekusi kode berdasarkan terpenuhi atau tidaknya suatu syarat logika.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 text-sm">
+                        <div class="p-4 rounded-xl bg-slate-800/70 border border-cyan-500/40">
+                            <h4 class="font-mono font-bold text-cyan-300 mb-1">1. Struktur if</h4>
+                            <p class="text-xs text-slate-300 mb-2">Mengeksekusi blok kode di dalamnya <strong>hanya jika</strong> kondisi bernilai benar (<code>true</code>). Jika salah, blok kode dilewati.</p>
+                            <code class="block bg-slate-950 p-2 rounded text-xs text-cyan-200">if (suhu > 35) {<br>&nbsp;&nbsp;digitalWrite(kipas, HIGH);<br>}</code>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-800/70 border border-amber-500/40">
+                            <h4 class="font-mono font-bold text-amber-300 mb-1">2. Struktur if .. else</h4>
+                            <p class="text-xs text-slate-300 mb-2">Menyediakan dua jalur alternatif: jika kondisi benar jalankan blok <code>if</code>, jika kondisi salah jalankan blok <code>else</code>.</p>
+                            <code class="block bg-slate-950 p-2 rounded text-xs text-amber-200">if (cahaya < 300) {<br>&nbsp;&nbsp;// Lampu Nyala<br>} else {<br>&nbsp;&nbsp;// Lampu Mati<br>}</code>
+                        </div>
+                    </div>
+                `,
+                discussion: `
+                    <p><strong>Percabangan Bertingkat (if - else if - else):</strong> Jika terdapat lebih dari dua kemungkinan kondisi (misalnya indikator baterai: Penuh, Sedang, Lemah), kita dapat menambahkan <code>else if</code> di antara <code>if</code> dan <code>else</code> untuk memeriksa beberapa rentang kondisi secara berurutan.</p>
+                `,
+                code: `void loop() {
+  int jarak = 15; // Misal jarak sensor ultrasonik 15 cm
+
+  if (jarak < 20) {
+    // Jika objek dekat (< 20 cm), nyalakan alarm bahaya
+    digitalWrite(8, HIGH);
+  } else {
+    // Jika jarak aman (>= 20 cm), matikan alarm
+    digitalWrite(8, LOW);
+  }
+}`,
+                serialLog: ["> Evaluasi Kondisi: (15 < 20) => TRUE", "> Eksekusi Blok IF: Alarm Bahaya AKTIF"],
+                quiz: {
+                    q: "Pada struktur percabangan if .. else, kapankah blok kode di dalam bagian else akan dijalankan?",
+                    options: ["Selalu dijalankan setiap saat", "Ketika kondisi pada if bernilai benar (true)", "Ketika kondisi pada if bernilai salah (false)", "Hanya saat program pertama kali mulai"],
+                    answer: 2,
+                    explain: "Benar! Bagian else bertindak sebagai jalur cadangan yang dieksekusi apabila syarat pada if tidak terpenuhi (false)."
+                }
+            },
+            {
+                id: "M",
+                badge: "BAB M",
+                title: "Perulangan pada Program Arduino",
+                simMode: "loop_vortex",
+                hud: "Visualisasi 5D: Pusaran Iterasi Perulangan for & while Menghitung Siklus Secara Otomatis.",
+                content: `
+                    <p><strong>Perulangan (Looping)</strong> digunakan untuk mengeksekusi sekumpulan perintah secara berulang kali tanpa harus menulis baris kode yang sama berulang-ulang.</p>
+                    <div class="space-y-3 mt-2 text-sm">
+                        <div class="p-3.5 rounded-xl bg-slate-800/70 border-l-4 border-cyan-400">
+                            <strong class="font-mono text-cyan-300">1. Perulangan for</strong>
+                            <p class="text-xs text-slate-300 mt-1">Digunakan ketika <strong>jumlah perulangan sudah diketahui secara pasti</strong>. Terdiri dari 3 bagian: inisialisasi awal, syarat berhenti, dan perubahan nilai (increment/decrement).</p>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-slate-800/70 border-l-4 border-amber-400">
+                            <strong class="font-mono text-amber-300">2. Perulangan while</strong>
+                            <p class="text-xs text-slate-300 mt-1">Terus mengulang blok kode <strong>selama syarat kondisi bernilai benar (true)</strong>. Cocok ketika jumlah iterasi belum pasti (misal menunggu tombol ditekan).</p>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-slate-800/70 border-l-4 border-emerald-400">
+                            <strong class="font-mono text-emerald-300">3. Perulangan do .. while</strong>
+                            <p class="text-xs text-slate-300 mt-1">Menjalankan blok kode minimal <strong>satu kali terlebih dahulu</strong>, baru kemudian memeriksa syarat kondisi di akhir blok.</p>
+                        </div>
+                    </div>
+                `,
+                discussion: `
+                    <p><strong>Membedah Sintaks <code>for (int i = 0; i < 5; i++)</code>:</strong></p>
+                    <p>• <code>int i = 0</code>: Mulai menghitung dari 0.<br>
+                    • <code>i < 5</code>: Terus ulangi selama <code>i</code> masih kurang dari 5 (yaitu i = 0, 1, 2, 3, 4 -> total 5 kali).<br>
+                    • <code>i++</code>: Tambahkan nilai <code>i</code> sebesar 1 setiap selesai satu putaran.</p>
+                `,
+                code: `void setup() {
+  pinMode(13, OUTPUT);
+  // Mengedipkan LED sebanyak 5 kali saat menyala
+  for (int i = 0; i < 5; i++) {
+    digitalWrite(13, HIGH);
+    delay(200);
+    digitalWrite(13, LOW);
+    delay(200);
+  }
+}
+
+void loop() {}`,
+                serialLog: ["> Iterasi i=0 | i=1 | i=2 | i=3 | i=4", "> Perulangan for selesai (5 siklus)."],
+                quiz: {
+                    q: "Berapa kali perulangan for (int i = 1; i <= 4; i++) akan mengeksekusi blok kode di dalamnya?",
+                    options: ["3 kali", "4 kali", "5 kali", "Tidak terbatas"],
+                    answer: 1,
+                    explain: "Tepat! Nilai i berjalan dari 1, 2, 3, hingga 4, sehingga totalnya adalah 4 kali perulangan."
+                }
+            },
+            {
+                id: "N",
+                badge: "BAB N",
+                title: "Array (Larik) dan Fungsi pada Program Arduino",
+                simMode: "array_matrix",
+                hud: "Visualisasi 5D: Struktur Indeks Array [0..4] Menyimpan Deretan Nomor Pin LED Berjalan.",
+                content: `
+                    <p>Untuk mengelola banyak data atau komponen sekaligus secara efisien (seperti 8 buah LED berjalan atau menyimpan 10 sampel data sensor), program Arduino menggunakan <strong>Array (Larik)</strong> dan <strong>Fungsi (Function)</strong>.</p>
+                    <div class="space-y-3 mt-2 text-sm">
+                        <div class="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700">
+                            <h4 class="font-bold text-cyan-400 mb-1">1. Array (Larik)</h4>
+                            <p class="text-xs text-slate-300">Kumpulan variabel dengan <strong>tipe data yang sama</strong> yang disimpan di bawah satu nama dan diakses menggunakan nomor <strong>indeks yang selalu dimulai dari 0</strong>.</p>
+                            <code class="block bg-slate-950 p-2 rounded mt-1.5 text-xs text-cyan-200">int pinLED[4] = {2, 3, 4, 5}; // Indeks 0=2, 1=3, 2=4, 3=5</code>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700">
+                            <h4 class="font-bold text-emerald-400 mb-1">2. Fungsi Buatan Sendiri (User-Defined Function)</h4>
+                            <p class="text-xs text-slate-300">Sub-program modular yang dibuat untuk mengelompokkan tugas tertentu (misal fungsi <code>hitungJarak()</code> atau <code>nyalakanBuzzer()</code>) agar kode di dalam <code>loop()</code> tetap ringkas dan mudah dipelihara.</p>
+                        </div>
+                    </div>
+                `,
+                discussion: `
+                    <p><strong>Sinergi Array dan Perulangan for:</strong> Bayangkan Anda memiliki 6 LED di pin 2, 3, 4, 5, 6, 7. Tanpa array, Anda harus menulis 6 baris <code>pinMode()</code> secara manual. Dengan array <code>int led[] = {2,3,4,5,6,7};</code>, cukup gunakan satu perulangan <code>for</code> dari indeks 0 sampai 5 untuk mengatur semuanya sekaligus!</p>
+                `,
+                code: `int pinLED[] = {2, 3, 4, 5}; // Array berisi 4 nomor pin
+
+void setup() {
+  for (int i = 0; i < 4; i++) {
+    pinMode(pinLED[i], OUTPUT); // Mengatur pin 2,3,4,5 sekaligus
+  }
+}
+
+// Fungsi buatan sendiri untuk mematikan semua LED
+void matikanSemua() {
+  for (int i = 0; i < 4; i++) {
+    digitalWrite(pinLED[i], LOW);
+  }
+}`,
+                serialLog: ["> Array pinLED[0]=2, [1]=3, [2]=4, [3]=5", "> Fungsi matikanSemua() dipanggil -> Sukses"],
+                quiz: {
+                    q: "Jika dideklarasikan int dataSensor[5] = {10, 20, 30, 40, 50}; berapakah nilai dari dataSensor[2]?",
+                    options: ["10", "20", "30", "40"],
+                    answer: 2,
+                    explain: "Benar! Indeks array selalu dimulai dari 0: indeks [0]=10, indeks [1]=20, dan indeks [2]=30."
+                }
+            },
+            {
+                id: "O",
+                badge: "BAB O",
+                title: "Library Arduino",
+                simMode: "library_ecosystem",
+                hud: "Visualisasi 5D: Ekosistem Pustaka Library (Servo, DHT, LiquidCrystal) Terhubung ke Inti Arduino.",
+                content: `
+                    <p><strong>Library (Pustaka) Arduino</strong> adalah kumpulan kode siap pakai yang ditulis oleh pengembang atau komunitas untuk mempermudah pengendalian sensor, aktuator, layar, maupun modul komunikasi yang kompleks.</p>
+                    <p class="text-sm">Tanpa library, kita harus menulis ratusan baris kode protokol komunikasi tingkat rendah (seperti timing sinyal mikrodetik atau protokol I2C/SPI) secara manual.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2 text-xs sm:text-sm">
+                        <div class="p-3 rounded-xl bg-slate-800/70 border border-slate-700">
+                            <strong class="font-mono text-cyan-400">Servo.h</strong>
+                            <p class="text-slate-300 mt-0.5">Menggerakkan motor servo ke sudut spesifik (0° – 180°) dengan perintah sederhana <code>myServo.write(90);</code>.</p>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-800/70 border border-slate-700">
+                            <strong class="font-mono text-amber-400">LiquidCrystal_I2C.h</strong>
+                            <p class="text-slate-300 mt-0.5">Menampilkan karakter teks ke layar LCD 16x2 hanya menggunakan 2 kabel data (SDA & SCL).</p>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-800/70 border border-slate-700">
+                            <strong class="font-mono text-emerald-400">DHT.h</strong>
+                            <p class="text-slate-300 mt-0.5">Membaca data suhu dan kelembapan udara dari sensor digital DHT11 / DHT22 secara instan.</p>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-800/70 border border-slate-700">
+                            <strong class="font-mono text-purple-400">SPI.h & Wire.h</strong>
+                            <p class="text-slate-300 mt-0.5">Pustaka standar bawaan untuk komunikasi antar-chip berkecepatan tinggi (SPI dan I2C).</p>
+                        </div>
+                    </div>
+                `,
+                discussion: `
+                    <p><strong>Cara Menggunakan Library di Arduino:</strong></p>
+                    <ol class="list-decimal pl-5 space-y-1">
+                        <li>Instal pustaka melalui menu <em>Sketch -> Include Library -> Manage Libraries</em> di Arduino IDE.</li>
+                        <li>Sertakan header pustaka di baris paling atas kode menggunakan <code>#include &lt;NamaLibrary.h&gt;</code>.</li>
+                        <li>Buat objek dari kelas library tersebut (misal: <code>Servo motorKu;</code>) lalu panggil fungsinya di <code>setup()</code> dan <code>loop()</code>.</li>
+                    </ol>
+                `,
+                code: `#include <Servo.h> // 1. Sertakan library Servo
+
+Servo palangPintu; // 2. Buat objek servo
+
+void setup() {
+  palangPintu.attach(9); // Hubungkan servo ke pin 9
+}
+
+void loop() {
+  palangPintu.write(90); // Buka palang ke sudut 90 derajat
+  delay(2000);
+  palangPintu.write(0);  // Tutup palang kembali ke 0 derajat
+  delay(2000);
+}`,
+                serialLog: ["> Library <Servo.h> dimuat.", "> Servo Pin 9: Sudut 0° <-> 90° aktif."],
+                quiz: {
+                    q: "Direktif praprosesor apa yang wajib ditulis di bagian atas program untuk memanggil pustaka eksternal seperti Servo.h?",
+                    options: ["#define <Servo.h>", "#import <Servo.h>", "#include <Servo.h>", "#library <Servo.h>"],
+                    answer: 2,
+                    explain: "Tepat! Direktif #include digunakan untuk menyertakan file header library ke dalam sketch Arduino."
+                }
+            }
+        ];
+
+        // =========================================================================
+        // 2. STATE APLIKASI & ENGINE AUDIO 5D (TONE.JS)
+        // =========================================================================
+        let currentIndex = 0;
+        let isPlaying = true;
+        let audioEnabled = false;
+        let synth = null;
+        let pulseBoost = 0;
+
+        async function toggleAudioEngine() {
+            try {
+                if (!audioEnabled) {
+                    await Tone.start();
+                    if (!synth) {
+                        synth = new Tone.PolySynth(Tone.Synth, {
+                            oscillator: { type: "sine" },
+                            envelope: { attack: 0.02, decay: 0.1, sustain: 0.2, release: 0.5 }
+                        }).toDestination();
+                        synth.volume.value = -10;
+                    }
+                    audioEnabled = true;
+                    document.getElementById('audioIcon').className = "fas fa-volume-up text-emerald-400";
+                    document.getElementById('audioLabel').innerText = "Audio 5D: Aktif";
+                    play5DSound("C5", "8n");
+                    showToast("Audio Dimensi ke-5 Diaktifkan!");
+                } else {
+                    audioEnabled = false;
+                    document.getElementById('audioIcon').className = "fas fa-volume-mute text-rose-400";
+                    document.getElementById('audioLabel').innerText = "Audio 5D: Mati";
+                    showToast("Audio Dimensi ke-5 Dinonaktifkan.");
+                }
+            } catch (e) {
+                console.warn("Audio engine notice:", e);
+            }
+        }
+
+        function play5DSound(note = "E5", duration = "16n") {
+            if (audioEnabled && synth) {
+                try {
+                    synth.triggerAttackRelease(note, duration);
+                } catch (err) {}
+            }
+        }
+
+        function showToast(msg) {
+            const box = document.getElementById('toastBox');
+            document.getElementById('toastMessage').innerText = msg;
+            box.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                box.classList.add('translate-y-20', 'opacity-0');
+            }, 2800);
+        }
+
+        // =========================================================================
+        // 3. ENGINE RENDERING VIDEO ANIMASI 5 DIMENSI (THREE.JS)
+        // =========================================================================
+        let scene, camera, renderer, simGroup;
+        let simObjects = [];
+        let simClock = 0;
+        let isDragging = false;
+        let prevMouse = { x: 0, y: 0 };
+        let targetRot = { x: 0.35, y: 0.5 };
+
+        function init5DStage() {
+            const container = document.getElementById('canvasContainer');
+            const canvas = document.getElementById('scene5D');
+
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x020617, 0.045);
+
+            camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+            camera.position.set(0, 3.2, 8.5);
+            camera.lookAt(0, 0, 0);
+
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            // Pencahayaan Dinamis 5D
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
+            scene.add(ambientLight);
+
+            const dirLight = new THREE.DirectionalLight(0x38bdf8, 1.2);
+            dirLight.position.set(5, 10, 7);
+            scene.add(dirLight);
+
+            const pointLight = new THREE.PointLight(0x00979D, 2, 20);
+            pointLight.position.set(-4, 3, 4);
+            scene.add(pointLight);
+
+            // Grid Lantai Hologram
+            const gridHelper = new THREE.GridHelper(18, 18, 0x00979D, 0x1e293b);
+            gridHelper.position.y = -1.6;
+            scene.add(gridHelper);
+
+            simGroup = new THREE.Group();
+            scene.add(simGroup);
+
+            // Interaksi Mouse & Sentuh untuk memutar kamera 3D
+            canvas.addEventListener('mousedown', (e) => { isDragging = true; prevMouse = { x: e.clientX, y: e.clientY }; });
+            window.addEventListener('mouseup', () => { isDragging = false; });
+            window.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                const dx = e.clientX - prevMouse.x;
+                const dy = e.clientY - prevMouse.y;
+                targetRot.y += dx * 0.01;
+                targetRot.x = Math.max(-0.6, Math.min(1.1, targetRot.x + dy * 0.01));
+                prevMouse = { x: e.clientX, y: e.clientY };
+            });
+
+            canvas.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    isDragging = true;
+                    prevMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                }
+            }, { passive: true });
+            window.addEventListener('touchend', () => { isDragging = false; });
+            window.addEventListener('touchmove', (e) => {
+                if (!isDragging || e.touches.length !== 1) return;
+                const dx = e.touches[0].clientX - prevMouse.x;
+                const dy = e.touches[0].clientY - prevMouse.y;
+                targetRot.y += dx * 0.01;
+                targetRot.x = Math.max(-0.6, Math.min(1.1, targetRot.x + dy * 0.01));
+                prevMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            }, { passive: true });
+
+            window.addEventListener('resize', onResize5D);
+        }
+
+        function onResize5D() {
+            const container = document.getElementById('canvasContainer');
+            if (!container || !renderer || !camera) return;
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+
+        function build5DSceneForChapter(mode) {
+            // Bersihkan objek sebelumnya
+            while (simGroup.children.length > 0) {
+                simGroup.remove(simGroup.children[0]);
+            }
+            simObjects = [];
+
+            const matTeal = new THREE.MeshStandardMaterial({ color: 0x00979D, roughness: 0.3, metalness: 0.6 });
+            const matAmber = new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.2, emissive: 0x78350f });
+            const matEmerald = new THREE.MeshStandardMaterial({ color: 0x10b981, roughness: 0.3, emissive: 0x064e3b });
+            const matRose = new THREE.MeshStandardMaterial({ color: 0xf43f5e, roughness: 0.3, emissive: 0x881337 });
+            const matDarkChip = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.5, metalness: 0.8 });
+
+            if (mode === "decomposition" || mode === "search_logic") {
+                // 4 Pilar Berpikir Komputasional yang mengorbit inti
+                const core = new THREE.Mesh(new THREE.OctahedronGeometry(0.9, 0), matTeal);
+                simGroup.add(core);
+                simObjects.push({ mesh: core, type: 'core' });
+
+                const colors = [0x38bdf8, 0x10b981, 0xf59e0b, 0xa855f7];
+                for (let i = 0; i < 4; i++) {
+                    const box = new THREE.Mesh(
+                        new THREE.BoxGeometry(0.85, 0.85, 0.85),
+                        new THREE.MeshStandardMaterial({ color: colors[i], roughness: 0.25, metalness: 0.4 })
+                    );
+                    simGroup.add(box);
+                    simObjects.push({ mesh: box, type: 'orbit', index: i });
+                }
+            } else if (mode === "arduino_board" || mode === "digital_io" || mode === "analog_pwm") {
+                // Model 3D Papan Arduino Uno + Chip ATmega328P + Pin Header + LED Indikator
+                const pcb = new THREE.Mesh(new THREE.BoxGeometry(4.4, 0.18, 3.0), matTeal);
+                simGroup.add(pcb);
+
+                const usbPort = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.55, 0.7), new THREE.MeshStandardMaterial({ color: 0xcbd5e1, metalness: 0.9, roughness: 0.2 }));
+                usbPort.position.set(-2.0, 0.32, -0.7);
+                simGroup.add(usbPort);
+
+                const chip = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.22, 0.55), matDarkChip);
+                chip.position.set(0.4, 0.18, 0.4);
+                simGroup.add(chip);
+
+                // Barisan Pin Digital & LED Interaktif
+                for (let i = 0; i < 8; i++) {
+                    const pin = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.3, 0.22), matDarkChip);
+                    pin.position.set(-1.2 + i * 0.42, 0.22, -1.25);
+                    simGroup.add(pin);
+                }
+
+                const ledBulb = new THREE.Mesh(new THREE.SphereGeometry(0.28, 16, 16), matAmber);
+                ledBulb.position.set(1.5, 0.45, -0.8);
+                simGroup.add(ledBulb);
+                simObjects.push({ mesh: ledBulb, type: 'led' });
+
+                // Gelombang Sinyal Analog / Digital di atas papan
+                for (let j = 0; j < 12; j++) {
+                    const waveBar = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.6, 0.16), matEmerald);
+                    waveBar.position.set(-2.2 + j * 0.4, 1.3, 0);
+                    simGroup.add(waveBar);
+                    simObjects.push({ mesh: waveBar, type: 'wave', index: j });
+                }
+            } else if (mode === "loop_vortex" || mode === "structure_flow") {
+                // Cincin Perulangan Berputar (Torus + Partikel Iterasi)
+                const torus = new THREE.Mesh(new THREE.TorusGeometry(1.6, 0.14, 16, 48), matTeal);
+                torus.rotation.x = Math.PI / 2;
+                simGroup.add(torus);
+                simObjects.push({ mesh: torus, type: 'torus' });
+
+                for (let i = 0; i < 6; i++) {
+                    const node = new THREE.Mesh(new THREE.SphereGeometry(0.26, 16, 16), i % 2 === 0 ? matAmber : matEmerald);
+                    simGroup.add(node);
+                    simObjects.push({ mesh: node, type: 'ringNode', index: i });
+                }
+            } else {
+                // Visualisasi Matriks Array / Sintaks / Library Nodes
+                for (let i = 0; i < 5; i++) {
+                    const cell = new THREE.Mesh(
+                        new THREE.BoxGeometry(0.85, 1.1, 0.85),
+                        i === 2 ? matAmber : matTeal
+                    );
+                    cell.position.set((i - 2) * 1.15, 0, 0);
+                    simGroup.add(cell);
+                    simObjects.push({ mesh: cell, type: 'arrayCell', index: i });
+                }
+            }
+        }
+
+        function animate5DLoop() {
+            requestAnimationFrame(animate5DLoop);
+
+            if (isPlaying) {
+                simClock += 0.025 + pulseBoost;
+                if (pulseBoost > 0) pulseBoost *= 0.92;
+
+                // Update Timeline Slider & Waktu
+                const slider = document.getElementById('timelineSlider');
+                const progress = Math.floor((simClock * 15) % 100);
+                if (slider) slider.value = progress;
+                const secs = Math.floor(simClock) % 60;
+                document.getElementById('timeElapsed').innerText = `00:${secs < 10 ? '0' + secs : secs}`;
+            }
+
+            // Smooth Rotasi Kamera
+            simGroup.rotation.y += (targetRot.y - simGroup.rotation.y) * 0.08;
+            simGroup.rotation.x += (targetRot.x - simGroup.rotation.x) * 0.08;
+            if (isPlaying && !isDragging) {
+                targetRot.y += 0.004;
+            }
+
+            // Animasi Setiap Elemen 5D
+            simObjects.forEach((obj) => {
+                if (obj.type === 'core') {
+                    obj.mesh.rotation.y = simClock * 1.2;
+                    obj.mesh.rotation.x = simClock * 0.7;
+                    const s = 1 + Math.sin(simClock * 3) * 0.12;
+                    obj.mesh.scale.set(s, s, s);
+                } else if (obj.type === 'orbit') {
+                    const angle = simClock + (obj.index * Math.PI) / 2;
+                    const radius = 2.1 + Math.sin(simClock * 2) * 0.35;
+                    obj.mesh.position.set(Math.cos(angle) * radius, Math.sin(simClock * 2 + obj.index) * 0.4, Math.sin(angle) * radius);
+                    obj.mesh.rotation.y = -angle;
+                } else if (obj.type === 'led') {
+                    const isOn = Math.sin(simClock * 4) > 0;
+                    obj.mesh.material.emissive.setHex(isOn ? 0xf59e0b : 0x1e293b);
+                    const scale = isOn ? 1.25 : 0.9;
+                    obj.mesh.scale.set(scale, scale, scale);
+                } else if (obj.type === 'wave') {
+                    const h = 0.25 + Math.abs(Math.sin(simClock * 3 + obj.index * 0.5)) * 1.1;
+                    obj.mesh.scale.y = h;
+                } else if (obj.type === 'ringNode') {
+                    const a = simClock * 1.5 + (obj.index * Math.PI * 2) / 6;
+                    obj.mesh.position.set(Math.cos(a) * 1.6, Math.sin(simClock * 3 + obj.index) * 0.25, Math.sin(a) * 1.6);
+                } else if (obj.type === 'arrayCell') {
+                    obj.mesh.position.y = Math.sin(simClock * 2.5 + obj.index * 0.8) * 0.35;
+                }
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        // =========================================================================
+        // 4. KONTROL INTERAKTIF & NAVIGASI MATERI
+        // =========================================================================
+        function renderSidebar() {
+            const nav = document.getElementById('chapterNav');
+            nav.innerHTML = curriculumData.map((item, idx) => {
+                const active = idx === currentIndex;
+                return `
+                    <button onclick="selectChapter(${idx})" class="w-full text-left px-3 py-2.5 rounded-xl text-xs font-medium flex items-center gap-2.5 transition ${
+                        active 
+                        ? 'bg-gradient-to-r from-arduino-teal to-cyan-600 text-slate-950 font-bold shadow-md' 
+                        : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'
+                    }">
+                        <span class="w-6 h-6 rounded-lg flex items-center justify-center text-[11px] font-bold flex-shrink-0 ${
+                            active ? 'bg-slate-950 text-cyan-400' : 'bg-slate-800 text-slate-400'
+                        }">${item.id}</span>
+                        <span class="truncate">${item.title}</span>
+                    </button>
+                `;
+            }).join('');
+            document.getElementById('progressBadge').innerText = `${currentIndex + 1} / ${curriculumData.length}`;
+        }
+
+        function selectChapter(index) {
+            currentIndex = index;
+            const data = curriculumData[index];
+
+            // Update Header & Teks Materi
+            document.getElementById('chapterBadge').innerText = data.badge;
+            document.getElementById('chapterTitle').innerText = data.title;
+            document.getElementById('stageTitle').innerText = `Simulasi 5D: ${data.title}`;
+            document.getElementById('hudDescription').innerText = data.hud;
+            document.getElementById('chapterContent').innerHTML = data.content;
+            document.getElementById('chapterDiscussion').innerHTML = data.discussion;
+            document.getElementById('chapterCode').innerText = data.code;
+
+            // Update Serial Monitor
+            const serialBox = document.getElementById('serialOutput');
+            serialBox.innerHTML = data.serialLog.map(line => `<div>${line}</div>`).join('');
+
+            // Bangun Ulang Animasi 5D
+            build5DSceneForChapter(data.simMode);
+            play5DSound("G4", "16n");
+
+            // Render Kuis
+            renderQuiz(data.quiz);
+
+            // Render Sidebar & Tutup di Mobile
+            renderSidebar();
+            closeSidebar();
+        }
+
+        function renderQuiz(quiz) {
+            document.getElementById('quizQuestion').innerText = quiz.q;
+            const feedback = document.getElementById('quizFeedback');
+            feedback.classList.add('hidden');
+
+            const optionsContainer = document.getElementById('quizOptions');
+            optionsContainer.innerHTML = quiz.options.map((opt, idx) => `
+                <button onclick="checkQuizAnswer(${idx})" class="w-full text-left px-3.5 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-xs text-slate-200 transition flex items-center gap-2">
+                    <span class="w-5 h-5 rounded-full bg-slate-900 text-cyan-400 flex items-center justify-center font-bold text-[10px]">${String.fromCharCode(65 + idx)}</span>
+                    <span>${opt}</span>
+                </button>
+            `).join('');
+        }
+
+        function checkQuizAnswer(selectedIdx) {
+            const quiz = curriculumData[currentIndex].quiz;
+            const feedback = document.getElementById('quizFeedback');
+            feedback.classList.remove('hidden');
+
+            if (selectedIdx === quiz.answer) {
+                feedback.className = "p-3 rounded-xl text-xs font-medium bg-emerald-950/80 border border-emerald-500/50 text-emerald-300";
+                feedback.innerHTML = `<i class="fas fa-check-circle mr-1"></i> ${quiz.explain}`;
+                play5DSound("C5", "8n");
+                trigger5DPulse();
+            } else {
+                feedback.className = "p-3 rounded-xl text-xs font-medium bg-rose-950/80 border border-rose-500/50 text-rose-300";
+                feedback.innerHTML = `<i class="fas fa-times-circle mr-1"></i> Belum tepat. Coba perhatikan kembali materi di atas!`;
+                play5DSound("A3", "8n");
+            }
+        }
+
+        function togglePlayAnimation() {
+            isPlaying = !isPlaying;
+            document.getElementById('playIcon').className = isPlaying ? "fas fa-pause" : "fas fa-play";
+            document.getElementById('playText').innerText = isPlaying ? "Jeda Animasi" : "Putar Animasi";
+        }
+
+        function trigger5DPulse() {
+            pulseBoost = 0.28;
+            play5DSound("E5", "16n");
+            const serialBox = document.getElementById('serialOutput');
+            const newLog = document.createElement('div');
+            newLog.className = "text-amber-300";
+            newLog.innerText = `> [IMPULS 5D] Sinyal dieksekusi @ ${new Date().toLocaleTimeString()}`;
+            serialBox.appendChild(newLog);
+            serialBox.scrollTop = serialBox.scrollHeight;
+        }
+
+        function runCodeIn5D() {
+            trigger5DPulse();
+            showToast("Kode berhasil dikompilasi dan dijalankan ke Simulasi 5D!");
+        }
+
+        function copyChapterCode() {
+            const codeText = document.getElementById('chapterCode').innerText;
+            const tempInput = document.createElement('textarea');
+            tempInput.value = codeText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showToast("Kode Arduino berhasil disalin ke clipboard!");
+        }
+
+        function nextChapter() {
+            if (currentIndex < curriculumData.length - 1) {
+                selectChapter(currentIndex + 1);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                showToast("Selamat! Anda telah menyelesaikan seluruh Bab A sampai Bab O.");
+            }
+        }
+
+        function prevChapter() {
+            if (currentIndex > 0) {
+                selectChapter(currentIndex - 1);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // Kontrol Sidebar Mobile
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        document.getElementById('toggleSidebarBtn').addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        });
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        }
+
+        // Slider Timeline Manual
+        document.getElementById('timelineSlider').addEventListener('input', (e) => {
+            simClock = (parseFloat(e.target.value) / 100) * 12;
+        });
+
+        // Inisialisasi saat halaman dimuat
+        window.onload = function () {
+            init5DStage();
+            selectChapter(0);
+            animate5DLoop();
+        };
+    </script>
+</body>
+</html>
